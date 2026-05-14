@@ -1,0 +1,31 @@
+name: Build with Webpack
+
+on:
+  push:
+    branches:
+      - main
+      - master  # Add your default branch name here
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read  # To checkout code
+      actions: read
+      # Add other permissions if your job needs it
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # Or the version you use
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build with webpack
+        run: npx webpack
