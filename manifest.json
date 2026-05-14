@@ -1,0 +1,28 @@
+{
+  "name": "Reflections in Light",
+  "short_name": "Reflections",
+  "description": "A quiet space for small daily moments of clarity.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f4f8",
+  "theme_color": "#dcdbe8",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/images/icons/maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/images/icons/orb-neutral.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/icons/glowing-translucent-pink-orb.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
