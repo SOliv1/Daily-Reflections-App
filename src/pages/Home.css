@@ -1,0 +1,297 @@
+.home-container {
+    text-align: center;
+    padding: 40px 20px;
+    max-width: 700px;
+    margin: 0 auto;
+    animation: fadeIn 1.2s ease;
+}
+
+.home-hero {
+    width: 100%;
+    max-width: 600px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.home-title {
+    font-size: 2.4rem;
+    font-weight: 400;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.home-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.8;
+    margin-bottom: 40px;
+}
+
+.home-links {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.home-link {
+    text-decoration: none;
+    font-size: 1.1rem;
+    color: #333;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+    transition: all 0.25s ease;
+}
+
+.home-link:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.home-orb {
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 30px auto;
+    border-radius: 50%;
+    filter: blur(1.5px);
+    animation: orbFloat 7s ease-in-out infinite;
+    opacity: 0.95;
+}
+
+.home-orb {
+    position: relative;
+}
+
+.home-orb::after {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(255, 255, 255, 0.35),
+            rgba(255, 255, 255, 0.05),
+            transparent);
+    filter: blur(20px);
+    z-index: -1;
+}
+
+.home-orb-small {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 20px auto;
+    border-radius: 50%;
+    filter: blur(1px);
+    animation: orbFloat 5s ease-in-out infinite;
+    opacity: 0.8;
+    z-index: 1;
+}
+
+@keyframes orbDrift {
+    0% {
+        transform: translate(-50%, 0);
+    }
+
+    50% {
+        transform: translate(-50%, -10px);
+    }
+
+    100% {
+        transform: translate(-50%, 0);
+    }
+}
+
+@keyframes orbFloat {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.orb-dawn {
+    background: radial-gradient(circle at 50% 40%,
+            rgba(255, 200, 150, 0.55),
+            rgba(255, 160, 120, 0.45),
+            rgba(200, 120, 100, 0.35));
+}
+
+.orb-light {
+    background: radial-gradient(circle at 50% 40%,
+            rgba(200, 180, 255, 0.55),
+            rgba(150, 160, 255, 0.45),
+            rgba(80, 90, 120, 0.35));
+}
+
+.orb-night {
+    background: radial-gradient(circle at 50% 40%,
+            rgba(30, 30, 60, 0.6),
+            rgba(20, 20, 40, 0.55),
+            rgba(10, 10, 20, 0.45));
+}
+
+.orb-dusk {
+    background: radial-gradient(circle at 50% 40%,
+            rgba(120, 140, 255, 0.6),
+            rgba(70, 80, 160, 0.55),
+            rgba(30, 35, 60, 0.45));
+}
+
+.bg-dawn {
+    background: linear-gradient(to bottom, #fff4e8, #fbe9d8);
+}
+
+.bg-light {
+    background: linear-gradient(to bottom, #f4f4f8, #e9e9f0);
+}
+
+.bg-dusk {
+    background: linear-gradient(to bottom, #e8e4f8, #d8d4f0);
+}
+
+.bg-night {
+    background: linear-gradient(to bottom, #1f2230, #2a2d3f);
+}
+
+.home-container {
+    transition: background 3s ease;
+}
+
+.text-dawn {
+    font-weight: 300;
+    opacity: 0.95;
+}
+
+.text-day {
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+.text-dusk {
+    font-weight: 450;
+    opacity: 0.95;
+}
+
+.text-night {
+    font-weight: 500;
+    opacity: 1;
+    text-shadow: 0 0 12px rgba(180, 190, 255, 0.35);
+}
+
+
+.home-title,
+.home-subtitle {
+    transition: color 2s ease, opacity 2s ease;
+    opacity: 0;
+    animation: textFade 2.5s ease forwards;
+
+}
+
+@keyframes textFade {
+    0% {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fade-in */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+.text-dawn {
+    font-weight: 300;
+}
+
+.text-day {
+    font-weight: 400;
+}
+
+.text-dusk {
+    font-weight: 450;
+}
+
+.text-night {
+    font-weight: 500;
+}
+
+.season-spring {
+    color: #4d7f4d;
+}
+
+/* soft green */
+.season-summer {
+    color: #c28a2e;
+}
+
+/* warm gold */
+.season-autumn {
+    color: #b45a2b;
+}
+
+/* ember */
+.season-winter {
+    color: #8fb3ff;
+}
+
+/* icy blue */
+.season-winter {
+    color: #8fb3ff;
+
+}
+
+/* subtle seasonal color filters for hero image */
+.hero-spring {
+    filter: brightness(1.05) saturate(1.1);
+}
+
+.hero-summer {
+    filter: brightness(1.15) saturate(1.2);
+}
+
+.hero-autumn {
+    filter: brightness(1.05) sepia(0.15) saturate(1.15);
+}
+
+.hero-winter {
+    filter: brightness(1.1) contrast(1.05) hue-rotate(20deg);
+}
+
+.hero-shimmer {
+    animation: shimmerPulse 6s ease-in-out infinite;
+}
+
+@keyframes shimmerPulse {
+    0% {
+        filter: brightness(1);
+    }
+
+    50% {
+        filter: brightness(1.08);
+    }
+
+    100% {
+        filter: brightness(1);
+    }
+}
