@@ -1,4 +1,5 @@
-#
+# [![Deploy to GitHub Pages](https://github.com/SOliv1/Daily-Reflections-App/actions/workflows/deploy.yml/badge.svg)](https://github.com/SOliv1/Daily-Reflections-App/actions/workflows/deploy.yml)
+
 Triggered redeploy: May 15, 2026
 # Getting Started with Create React App
 
