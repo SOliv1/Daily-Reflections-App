@@ -81,10 +81,10 @@ function Home() {
       <div className="home-orb-small"></div>
 
 
-      <h1 className={`home-title ${textClass} ${seasonClass}`}>Reflections in Light</h1>
+      <h1 className={`home-title ${textClass} ${seasonClass}`}>Daily Orb Reflections</h1>
 
       <p className={`home-subtitle ${textClass} ${seasonClass}`}>
-        A quiet space for small daily moments of clarity.
+        A daily moment of clarity from the Reflections in Light family
       </p>
 
 
@@ -93,7 +93,7 @@ function Home() {
       </blockquote>
 
       <nav className="home-links">
-        <Link to="/today" className="home-link">Today’s Reflection</Link>
+        <Link to="/today" className="home-link">Today</Link>
         <Link to="/favourites" className="home-link">Favourites</Link>
         <Link to="/about" className="home-link">About</Link>
       </nav>
