@@ -74,7 +74,7 @@ function Home() {
     </div>
 
       <img
-        src="/images/hero.jpg"
+        src={process.env.PUBLIC_URL + "/images/hero.jpg"}
         alt="Soft light"
         className={`home-hero hero-shimmer ${seasonClass.replace("season", "hero")}`}
       />
