@@ -2,6 +2,7 @@
 
 Triggered redeploy: May 15, 2026
 # Getting Started with Create React App
+The App has been deployed on Github-pages [HERE](https://soliv1.github.io/Daily-Reflections-App/)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
