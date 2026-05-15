@@ -2,7 +2,7 @@
   "name": "Reflections in Light",
   "short_name": "Reflections",
   "description": "A quiet space for small daily moments of clarity.",
-  "start_url": "/",
+  "start_url": "/Daily-Reflections-App/",
   "display": "standalone",
   "background_color": "#f4f4f8",
   "theme_color": "#dcdbe8",
