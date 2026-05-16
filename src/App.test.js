@@ -1,8 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders the daily orb home page', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  expect(
+    screen.getByRole('heading', { name: /daily orb reflections/i })
+  ).toBeInTheDocument();
+  expect(screen.getAllByRole('link', { name: /today/i })).toHaveLength(2);
 });
