@@ -16,9 +16,9 @@ const reflections = [
   {
     id: 3,
     title: "Quiet Room",
-    line: "Not every thought needs an audience.",
+    line: "Nothing real is lost.",
     mood: "calm",
-    image: process.env.PUBLIC_URL + "/images/reflections3.png"
+    image: process.env.PUBLIC_URL + "/images/reflections3-deepOcean.png"
   },
   {
     id: 4,
@@ -47,7 +47,55 @@ const reflections = [
     line: "You are not late for your own life.",
     mood: "reassurance",
     image: process.env.PUBLIC_URL + "/images/reflections7.jpg"
-  }
+  },
+  {
+    id: 8,
+    title: "Tidal Blue Orb-gentle wave reflections",
+    line: "Nothing real is lost.",
+    mood: "reassurance",
+    image: process.env.PUBLIC_URL + "/images/Tidal-Blue-Orb.png"
+  },
+  {
+    id: 9,
+    title: "Forest Dawn Orb-pale greens, soft gold, morning haze",
+    line: "You stand on solid ground.",
+    mood: "grounding",
+    image: process.env.PUBLIC_URL + "/images/Forest-DawnOrb.png"
+  },
+  {
+    id: 10,
+    title: "Soft Breeze Orb, airy gradients, featherlight glow",
+    line: "No burden is final.",
+    mood: "ease",
+    image: process.env.PUBLIC_URL + "/images/soft-Breeze-Orb.png"
+  },
+  {
+    id: 11,
+    title: "Safe Harbour",
+    line: "You are not late for your own life.",
+    mood: "reassurance",
+    image: process.env.PUBLIC_URL + "/images/reflections7.jpg"
+  },
+  {
+    id: 12,
+    title: "",
+    line: "Truth restores balance.",
+    mood: "balance",
+    image: process.env.PUBLIC_URL + "/images/sunBeamOrb.png"
+  },
+
+
+
+
+
 ];
+
+export function getDailyReflection(date = new Date()) {
+  return reflections[date.getDay()];
+}
+
+export function getDailyOrbLine(date = new Date()) {
+  return getDailyReflection(date)?.line || "";
+}
 
 export default reflections;

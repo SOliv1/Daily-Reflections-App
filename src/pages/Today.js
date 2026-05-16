@@ -1,15 +1,11 @@
 import React from "react";
  import { Link } from "react-router-dom";
-import reflections from "../data/reflections";
+import { getDailyReflection } from "../data/reflections";
 import HeartButton from "../components/HeartButton";
 import "./Today.css";
 
 function Today() {
-  // Get today's day index (0–6)
-  const todayIndex = new Date().getDay(); // Sunday = 0, Monday = 1, etc.
-
-  // Map Sunday (0) → reflection 1, Monday (1) → reflection 2, etc.
-  const reflection = reflections[todayIndex];
+  const reflection = getDailyReflection();
 
   if (!reflection) {
     return <p>No reflection found for today.</p>;

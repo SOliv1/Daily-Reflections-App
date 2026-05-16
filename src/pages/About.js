@@ -1,5 +1,7 @@
 import React from "react";
 import "./About.css";
+import ContactBlock from '../components/ContactBlock';
+
 
 function About() {
   return (
@@ -46,7 +48,9 @@ function About() {
       </p>
       <p className="about-credit">As part of the Reflections in Light family, this app is one expression of a wider intention: creating digital spaces that feel peaceful, spacious, and emotionally safe. More projects will join this family over time, each with its own focus but sharing the same quiet ethos.</p>
       <p className="about-credit">Thank you for being here and for making space for reflection in your day.</p>
+      <ContactBlock />
     </div>
+
   );
 }
 
