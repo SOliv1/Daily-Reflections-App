@@ -1,4 +1,4 @@
-# [![Deploy to GitHub Pages](https://github.com/SOliv1/Daily-Reflections-App/actions/workflows/deploy.yml/badge.svg)](https://github.com/SOliv1/Daily-Reflections-App/actions/workflows/deploy.yml)
+# [![Deploy to GitHub Pages](https://github.com/SOliv1/Daily-Reflections-App/actions/workflows/deploy.yml/badge.svg)](https://github.com/SOliv1/Daily-Reflections-App/actions/workflows/deploy.yml) [![Build Status](https://app.travis-ci.com/SOliv1/Daily-Reflections-App.svg?token=6Ng2ZvxzzgEiDzXpAKMF&branch=master)](https://app.travis-ci.com/SOliv1/Daily-Reflections-App)
 
 Triggered redeploy: May 15, 2026
 # Getting Started with Create React App
