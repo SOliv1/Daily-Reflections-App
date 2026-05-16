@@ -6,6 +6,8 @@ import { getDailyOrbLine } from '../data/reflections';
 export default function ContactBlock() {
   const formRef = useRef();
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
   const month = new Date().getMonth(); // 0 = Jan, 11 = Dec
   let currentSeason;
   if (month >= 2 && month <= 4) {
@@ -20,18 +22,34 @@ export default function ContactBlock() {
   const seasonClass = `season-${currentSeason}`;
 
   const dailyOrbLine = getDailyOrbLine();
+  const emailServiceId = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+  const emailTemplateId = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+  const emailPublicKey = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 
 
   const sendEmail = (e) => {
     e.preventDefault();
+    setError("");
+
+    if (!emailServiceId || !emailTemplateId || !emailPublicKey) {
+      setError("The contact form is not configured yet. Please try again later.");
+      return;
+    }
+
+    setSending(true);
 
     emailjs.sendForm(
-      process.env.REACT_APP_EMAILJS_SERVICE_ID,
-      process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
+      emailServiceId,
+      emailTemplateId,
       formRef.current,
-      process.env.REACT_APP_EMAILJS_PUBLIC_KEY
+      emailPublicKey
     ).then(() => {
       setSent(true);
+    }).catch((sendError) => {
+      console.error('EmailJS send failed:', sendError);
+      setError("Your message could not be sent right now. Please try again in a moment.");
+    }).finally(() => {
+      setSending(false);
     });
   };
 
@@ -54,7 +72,10 @@ export default function ContactBlock() {
             <input name="name" placeholder="Your name" required />
             <input name="from_email" placeholder="Your email" required />
             <textarea name="message" placeholder="Your message" required />
-            <button type="submit">Send</button>
+            {error && <p className="contact-error" role="alert">{error}</p>}
+            <button type="submit" disabled={sending}>
+              {sending ? "Sending..." : "Send"}
+            </button>
             </form>
     )}
     </section>

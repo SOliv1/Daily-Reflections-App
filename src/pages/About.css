@@ -223,8 +223,22 @@
     transform: translateY(-1px);
 }
 
+.contact-block button:disabled {
+    cursor: not-allowed;
+    opacity: 0.62;
+    transform: none;
+}
+
 .contact-block button:active {
     transform: translateY(0);
+}
+
+.contact-error {
+    margin: 0 0 14px;
+    color: #9a3d3d;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    text-align: center;
 }
 
 /* Success message */
