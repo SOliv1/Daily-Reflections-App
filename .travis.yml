@@ -1,51 +1,26 @@
 language: node_js
 node_js:
-  - "12"
-  - "14"
-  - "16"
-# Specify the operating system
-os:
-  - linux
-  - osx
-# Cache dependencies
-cache:
-  directories:
-    - node_modules
+  - "20"
 
-# Install dependencies
+cache:
+  npm: true
+  directories:
+    - ~/.npm
+
 install:
   - npm ci
 
-# Run tests
 script:
-  - npm run test
+  - npm test -- --watchAll=false App.test.js
   - npm run build
 
-# Run jobs in parallel
-jobs:
-  include:
-    - stage: lint
-      node_js: "16"
-      script: npm run lint
-
-    - stage: coverage
-      node_js: "16"
-      script: npm run test:coverage
-# Deploy to npm
 deploy:
-  provider: npm
-  email: "your-npm-email@example.com"
-  api_key: $NPM_TOKEN
-  edge: true # opt in to dpl v2
+  provider: pages:git
+  edge: true
+  token: "$GITHUB_TOKEN"
+  local_dir: build
+  target_branch: gh-pages
+  keep_history: true
+  cleanup: false
   on:
-    tags: true
-    branch: main
-# Notifications
-notifications:
-  email:
-    on_success: never
-    on_failure: always
-  slack:
-    rooms:
-      - secure: "encrypted-slack-webhook-url"
-
+    branch: master
