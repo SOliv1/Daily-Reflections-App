@@ -1,6 +1,30 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Home.css";
+import { useHeroImage } from "../components/useHeroImage";
+import { heroImages } from "../components/heroImagesConfig";
+import { useState as useReactState } from "react";
+
+function getRotationIndex(mode, customIndex = null) {
+  const now = new Date();
+  switch (mode) {
+    case "daily":
+      const start = new Date(now.getFullYear(), 0, 0);
+      const diff = now - start;
+      const day = Math.floor(diff / (1000 * 60 * 60 * 24));
+      return day % heroImages.length;
+    case "monthly":
+      return now.getMonth() % heroImages.length;
+    case "weekly":
+      const startYear = new Date(now.getFullYear(), 0, 1);
+      const week = Math.floor((now - startYear) / (7 * 24 * 60 * 60 * 1000));
+      return week % heroImages.length;
+    case "custom":
+      return customIndex !== null ? customIndex : 0;
+    default:
+      return 0;
+  }
+}
 
 function Home() {
   const hour = new Date().getHours();
@@ -14,12 +38,17 @@ function Home() {
 
   let bgClass = "bg-day";
 
-  if (hour >= 5 && hour < 10) bgClass = "bg-dawn";
-  else if (hour >= 10 && hour < 17) bgClass = "bg-light";
-  else if (hour >= 17 && hour < 20) bgClass = "bg-dusk";
-  else bgClass = "bg-night";
+  const [rotationMode, setRotationMode] = useReactState("weekly");
+  const [customIndex, setCustomIndex] = useReactState(0);
+  const index = getRotationIndex(rotationMode, customIndex);
+  const heroImage = `${process.env.PUBLIC_URL}/images/${heroImages[index]}`;
+  const heroFilename = heroImages[index];
 
   let textClass = "text-day";
+  if (hour >= 5 && hour < 10) textClass = "text-dawn";
+  else if (hour >= 10 && hour < 17) textClass = "text-day";
+  else if (hour >= 17 && hour < 20) textClass = "text-dusk";
+  else textClass = "text-night";
 
   if (hour >= 5 && hour < 10) textClass = "text-dawn";
   else if (hour >= 10 && hour < 17) textClass = "text-day";
@@ -63,19 +92,37 @@ function Home() {
   const quoteList = seasonalQuotes[seasonClass];
   const quote = quoteList[Math.floor(Math.random() * quoteList.length)];
 
-
-
   return (
     <div className={`home-container ${bgClass} ${seasonClass.replace("season", "bg")}`}>
-
-
-    <div className={`home-orb ${orbClass}`}>
-
-    </div>
+      {/* Hero image rotation controls for preview/testing (development only) */}
+      {process.env.NODE_ENV === "development" && (
+        <div style={{ margin: "16px 0", textAlign: "center" }}>
+          <label>
+            Rotation Mode:
+            <select value={rotationMode} onChange={e => setRotationMode(e.target.value)}>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="custom">Manual</option>
+            </select>
+          </label>
+          {rotationMode === "custom" && (
+            <label style={{ marginLeft: 16 }}>
+              Image:
+              <select value={customIndex} onChange={e => setCustomIndex(Number(e.target.value))}>
+                {heroImages.map((img, i) => (
+                  <option key={img} value={i}>{img}</option>
+                ))}
+              </select>
+            </label>
+          )}
+          <p className="testing-muted">Currently showing: {heroFilename}</p>
+        </div>
+      )}
 
       <img
-        src={process.env.PUBLIC_URL + "/images/hero.jpg"}
-        alt="Soft light"
+        src={heroImage}
+        alt="Soft Forest light"
         className={`home-hero hero-shimmer ${seasonClass.replace("season", "hero")}`}
       />
       <div className="home-orb-small"></div>
@@ -88,7 +135,8 @@ function Home() {
       </p>
 
 
-      <blockquote className={`home-quote ${textClass} ${seasonClass}`}>
+      <blockquote className={`seasonal-quotes
+         ${textClass} ${seasonClass}`}>
         {quote}
       </blockquote>
 

@@ -25,7 +25,7 @@ const reflections = [
     title: "Open Field",
     line: "There is more space than you think.",
     mood: "spacious",
-    image: process.env.PUBLIC_URL + "/images/reflections4.png"
+    image: process.env.PUBLIC_URL + "/images/reflections4.jpg"
   },
   {
     id: 5,
@@ -71,19 +71,25 @@ const reflections = [
   },
   {
     id: 11,
-    title: "Safe Harbour",
-    line: "You are not late for your own life.",
-    mood: "reassurance",
-    image: process.env.PUBLIC_URL + "/images/reflections7.jpg"
+    title: "Light Through the Window",
+    line: "Let the light that finds you be enough for today.",
+    mood: "spacious",
+    image: process.env.PUBLIC_URL + "/images/reflections8.png"
   },
   {
     id: 12,
-    title: "",
+    title: "Sun Beam Orb, warm golds, radiant light",
     line: "Truth restores balance.",
     mood: "balance",
     image: process.env.PUBLIC_URL + "/images/sunBeamOrb.png"
   },
-
+  {
+    id: 13,
+    title: "Soft Strength",
+    line: "Even in the storm, you are still on your path",
+    mood: "reassurance",
+    image: process.env.PUBLIC_URL + "/images/reflections11.jpg"
+  }
 
 
 

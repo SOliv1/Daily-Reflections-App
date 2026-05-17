@@ -1,11 +1,14 @@
 import React from "react";
- import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { getDailyReflection } from "../data/reflections";
 import HeartButton from "../components/HeartButton";
 import "./Today.css";
 
 function Today() {
-  const reflection = getDailyReflection();
+  const [searchParams] = useSearchParams();
+  const dateParam = searchParams.get("date");
+  const selectedDate = dateParam ? new Date(`${dateParam}T12:00:00`) : new Date();
+  const reflection = getDailyReflection(selectedDate);
 
   if (!reflection) {
     return <p>No reflection found for today.</p>;
