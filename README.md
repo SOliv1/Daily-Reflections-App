@@ -1,3 +1,5 @@
+[![Deploy to GitHub Pages](https://github.com/SOliv1/Daily-Reflections-App/actions/workflows/deploy.yml/badge.svg)](https://github.com/SOliv1/Daily-Reflections-App/actions/workflows/deploy.yml)
+
 # Daily Reflections App
 
 Daily Orb Reflections is a React app that shows a daily reflection, matching
