@@ -91,9 +91,6 @@ const reflections = [
     image: process.env.PUBLIC_URL + "/images/reflections11.jpg"
   }
 
-
-
-
 ];
 
 export function getDailyReflection(date = new Date()) {

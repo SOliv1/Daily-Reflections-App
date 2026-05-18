@@ -8,8 +8,13 @@ function About() {
     <div className="about-container page-fade">
       <h1 className="about-title">About</h1>
 
+
       <p className="about-text">
         Daily Orb: Reflections is part of the Reflections in Light family, a collection of calm, intentional digital spaces designed to support clarity, emotional rhythm, and gentle daily practice.
+      </p>
+
+      <p className="about-text" style={{ fontStyle: 'italic', color: '#888' }}>
+        Note: This app is a work in progress. You may notice new features and improvements appearing over time as we continue to develop and enhance your experience.
       </p>
 
       <p className="about-text">

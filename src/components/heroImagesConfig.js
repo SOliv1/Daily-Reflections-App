@@ -8,4 +8,4 @@ export const heroImages = [
 ];
 
 // Rotation modes: 'weekly', 'daily', 'monthly', 'custom'
-export const heroRotationMode = "weekly"; // Change to 'daily', 'monthly', or 'custom' as needed
+export const heroRotationMode = "daily"; // Change to 'daily', 'monthly', or 'custom' as needed

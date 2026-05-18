@@ -115,6 +115,67 @@ function Testing() {
     }));
   };
 
+  // Map hero image filename to matching quote/title from reflections.js
+  const heroImageToQuote = {
+    "reflections1.png": {
+      title: "Still Water",
+      line: "What is mine flows to me in perfect measure.",
+    },
+    "reflections2.jpg": {
+      title: "First Light",
+      line: "Today does not repeat. It unfolds.",
+    },
+    "reflections3-deepOcean.png": {
+      title: "Quiet Room",
+      line: "Nothing real is lost.",
+    },
+    "reflections4.jpg": {
+      title: "Open Field",
+      line: "There is more space than you think.",
+    },
+    "reflections5.jpg": {
+      title: "Small Candle",
+      line: "A little clarity is enough for the next step.",
+    },
+    "reflections6.jpg": {
+      title: "Gentle Tide",
+      line: "You are allowed to arrive slowly.",
+    },
+    "reflections7.jpg": {
+      title: "Safe Harbour",
+      line: "You are not late for your own life.",
+    },
+    "Tidal-Blue-Orb.png": {
+      title: "Tidal Blue Orb-gentle wave reflections",
+      line: "Nothing real is lost.",
+    },
+    "Forest-DawnOrb.png": {
+      title: "Forest Dawn Orb-pale greens, soft gold, morning haze",
+      line: "You stand on solid ground.",
+    },
+    "soft-Breeze-Orb.png": {
+      title: "Soft Breeze Orb, airy gradients, featherlight glow",
+      line: "No burden is final.",
+    },
+    "reflections8.png": {
+      title: "Light Through the Window",
+      line: "Let the light that finds you be enough for today.",
+    },
+    "sunBeamOrb.png": {
+      title: "Sun Beam Orb, warm golds, radiant light",
+      line: "Truth restores balance.",
+    },
+    "reflections11.jpg": {
+      title: "Soft Strength",
+      line: "Even in the storm, you are still on your path",
+    },
+    // Optionally add hero1-4 if you want to show placeholders
+    "hero1.jpg": { title: "Hero 1", line: "" },
+    "hero2.jpg": { title: "Hero 2", line: "" },
+    "hero3.jpg": { title: "Hero 3", line: "" },
+    "hero4.jpg": { title: "Hero 4", line: "" },
+  };
+
   return (
     <main className="testing-page page-fade">
       <section className="testing-section testing-intro">
@@ -150,6 +211,12 @@ function Testing() {
               </label>
             )}
             <p className="testing-muted">Currently showing: {heroFilename}</p>
+                    <button
+                      style={{ marginLeft: 8, padding: '2px 8px', fontSize: 12 }}
+                      onClick={() => window.open(heroImage, '_blank')}
+                    >
+                      Open Image
+                    </button>
           </div>
           <div style={{ textAlign: "center", marginBottom: 24 }}>
             <img
@@ -157,6 +224,12 @@ function Testing() {
               alt={heroFilename}
               style={{ maxWidth: 400, width: "100%", borderRadius: 12, boxShadow: "0 2px 12px #0002" }}
             />
+            {heroImageToQuote[heroFilename] && (
+              <div style={{ marginTop: 12 }}>
+                <strong>{heroImageToQuote[heroFilename].title}</strong>
+                <div style={{ fontStyle: "italic", marginTop: 4 }}>{heroImageToQuote[heroFilename].line}</div>
+              </div>
+            )}
           </div>
         </section>
       )}
