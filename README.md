@@ -6,7 +6,11 @@ image, mood, and favourites saved in the browser.
 Live app:
 [https://soliv1.github.io/Daily-Reflections-App/](https://soliv1.github.io/Daily-Reflections-App/)
 
-## Run Locally
+## Testing App: 
+ view [here](https://github.com/SOliv1/daily-reflections-testing-app)
+ View Live App [here](https://soliv1.github.io/daily-reflections-testing-app/)
+
+### Run Locally
 
 Install dependencies first:
 
