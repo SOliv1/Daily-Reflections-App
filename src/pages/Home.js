@@ -26,16 +26,17 @@ function getRotationIndex(mode, customIndex = null) {
 }
 
 function Home() {
+  // ...existing code...
+
+  // Restore hour for time-based logic
   const hour = new Date().getHours();
 
-  let orbClass = "orb-day"; // default
-
-  if (hour >= 5 && hour < 10) orbClass = "orb-dawn";
-  else if (hour >= 10 && hour < 17) orbClass = "orb-light";
-  else if (hour >= 17 && hour < 20) orbClass = "orb-dusk";
-  else orbClass = "orb-night";
-
+  // Restore bgClass for background styling
   let bgClass = "bg-day";
+  if (hour >= 5 && hour < 10) bgClass = "bg-dawn";
+  else if (hour >= 10 && hour < 17) bgClass = "bg-day";
+  else if (hour >= 17 && hour < 20) bgClass = "bg-dusk";
+  else bgClass = "bg-night";
 
   const [rotationMode, setRotationMode] = useReactState("weekly");
   const [customIndex, setCustomIndex] = useReactState(0);
