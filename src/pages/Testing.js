@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import reflections, { getDailyReflection } from "../data/reflections";
 import "./Testing.css";
-import { useHeroImage } from "../components/useHeroImage";
 import { heroImages } from "../components/heroImagesConfig";
 import { useState as useReactState } from "react";
 
