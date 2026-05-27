@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Home.css";
-import { useHeroImage } from "../components/useHeroImage";
 import { heroImages } from "../components/heroImagesConfig";
 import { useState as useReactState } from "react";
 
