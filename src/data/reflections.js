@@ -86,11 +86,61 @@ const reflections = [
   {
     id: 13,
     title: "Soft Strength",
-    line: "Even in the storm, you are still on your path",
+    line: "Even in the storm, you are still on your path.",
     mood: "reassurance",
     image: process.env.PUBLIC_URL + "/images/reflections11.jpg"
-  }
+  },
+  {
+    id: 14,
+    title: "A Calm Beginning",
+    line: "A calm beginning is always available.\nEven halfway through the day.\nEven halfway through a thought.",
+    mood: "thoughtful",
+    image: process.env.PUBLIC_URL + "/images/calm-beginning.png"
+  },
+  {
 
+    id: 15,
+    title: "Releasing the Day",
+    line: "Sometimes the most graceful act is letting go, softly, without resistance.",
+    mood: "thoughtful",
+    image: process.env.PUBLIC_URL + "/images/golden-light.png"
+  },
+  {
+    id: 16,
+    title: "Ready and Prepared",
+    line: "Readiness isn’t a rush. It’s a quiet knowing that the moment has arrived.",
+    mood: "thoughtful",
+    image: process.env.PUBLIC_URL + "/images/ready-and-prepared.png"
+  },
+  {
+    id: 17,
+    title: "Cherish Thought",
+    line: "Ideas are living light. Hold them gently; they’ll find their way home.",
+    mood: "thoughtful",
+    image: process.env.PUBLIC_URL + "/images/cherish-orb.png"
+  },
+  {
+
+    id: 18,
+    title: "Cherish Ideas",
+    line: "Ideas are living light. Hold them gently; they’ll find their way home.",
+    mood: "thoughtful",
+    image: process.env.PUBLIC_URL + "/images/cherish-ideas.jpg"
+  },
+  {
+  id: 19,
+    title: "Timely Ideas",
+    line: "Some ideas arrive right on time — quiet, precise, and exactly what you needed.",
+    mood: "thoughtful",
+    image: process.env.PUBLIC_URL + "/images/timely-ideas.jpg"
+  },
+  {
+  id: 20,
+    title: "Timeless Ideas",
+    line: "Some ideas don’t belong to any moment at all. They stay, steady and luminous.",
+    mood: "thoughtful",
+    image: process.env.PUBLIC_URL + "/images/glowingOrb-in-darkness.png"
+  }
 
 
 
