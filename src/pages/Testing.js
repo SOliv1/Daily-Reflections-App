@@ -128,7 +128,7 @@ function QuietRoom() {
           aria-label="Seasonal.Studio"
         >
           <img
-            src={`${process.env.PUBLIC_URL}/images/logos/r-logo-pearl-128.png`}
+            src={`${process.env.PUBLIC_URL}/images/logos/seasonal-studio-golden-orb-logo.png`}
             alt=""
             aria-hidden="true"
           />
