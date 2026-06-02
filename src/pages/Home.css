@@ -27,6 +27,21 @@
     margin-bottom: 40px;
 }
 
+.home-atmosphere-badge {
+    display: inline-block;
+    margin: 0 0 18px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(170, 128, 94, 0.24);
+    background: rgba(255, 251, 244, 0.7);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(63, 48, 37, 0.74);
+}
+
 .home-reflection-meta {
     margin: 0 0 36px;
     font-size: 0.76rem;

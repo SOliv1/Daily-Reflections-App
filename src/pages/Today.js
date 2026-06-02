@@ -34,6 +34,10 @@ function Today() {
 
       <h1 className="today-title">{reflection.title}</h1>
 
+      <p className="today-atmosphere-badge" aria-live="polite">
+        Current Atmosphere: {reflectionBlock.label} · {reflectionBlock.orb}
+      </p>
+
       <p className="today-line">{reflection.line}</p>
 
       <p className="today-block">

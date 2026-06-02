@@ -120,6 +120,10 @@ function Home() {
 
       <h1 className={`home-title ${textClass} ${seasonClass}`}>Daily Orb Reflections</h1>
 
+      <p className="home-atmosphere-badge" aria-live="polite">
+        Current Atmosphere: {reflectionBlock.label} · {reflectionBlock.orb}
+      </p>
+
       <p className={`home-subtitle ${textClass} ${seasonClass}`}>
         A daily moment of clarity from the Reflections in Light family
       </p>
