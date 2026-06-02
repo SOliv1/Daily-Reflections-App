@@ -12,7 +12,7 @@ function Header() {
       <nav className="header-nav">
         <Link to="/today" className="header-link">Today</Link>
         <Link to="/favourites" className="header-link">Favourites</Link>
-        <Link to="/testing" className="header-link">Testing</Link>
+        <Link to="/quiet-room" className="header-link">Quiet Room</Link>
         <Link to="/about" className="header-link">About</Link>
       </nav>
     </header>

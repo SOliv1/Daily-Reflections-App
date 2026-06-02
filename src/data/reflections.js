@@ -146,12 +146,172 @@ const reflections = [
 
 ];
 
-export function getDailyReflection(date = new Date()) {
-  return reflections[date.getDay()];
+export const reflectionBlocks = {
+  morning: {
+    label: "Morning",
+    orb: "Dawn Orb",
+    category: "Timely Ideas / Ready & Prepared",
+    reflectionIds: [19, 16, 9, 2, 14]
+  },
+  afternoon: {
+    label: "Afternoon",
+    orb: "Neutral Orb",
+    category: "Thoughtful / Cherish / Releasing / Ideas",
+    reflectionIds: [17, 18, 15, 14, 4, 12]
+  },
+  evening: {
+    label: "Evening",
+    orb: "Warm Orb",
+    category: "Cherish / Soft Reflections",
+    reflectionIds: [17, 18, 15, 6, 11]
+  },
+  night: {
+    label: "Night",
+    orb: "Night Orb",
+    category: "Timeless Ideas / Deep Calm",
+    reflectionIds: [20, 3, 8, 1, 13]
+  }
+};
+
+export const reflectionFocuses = {
+  thoughtful: {
+    label: "Thoughtful moments",
+    reflectionIds: [14, 17, 18, 19, 20]
+  },
+  cherish: {
+    label: "Cherished ideas",
+    reflectionIds: [17, 18, 11]
+  },
+  readiness: {
+    label: "Quiet readiness",
+    reflectionIds: [16, 19, 9, 2]
+  },
+  release: {
+    label: "Soft release",
+    reflectionIds: [15, 6, 10]
+  },
+  timeless: {
+    label: "Timeless calm",
+    reflectionIds: [20, 3, 1, 8]
+  }
+};
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+const blockByOrb = {
+  dawn: "morning",
+  neutral: "afternoon",
+  warm: "evening",
+  night: "night",
+  midnight: "night"
+};
+
+function getReflectionById(id) {
+  return reflections.find((reflection) => reflection.id === id);
 }
 
-export function getDailyOrbLine(date = new Date()) {
-  return getDailyReflection(date)?.line || "";
+function getDaySeed(date) {
+  return Math.floor(
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / MS_PER_DAY
+  );
+}
+
+export function getReflectionBlock(date = new Date()) {
+  const hour = date.getHours();
+
+  if (hour >= 5 && hour < 12) return "morning";
+  if (hour >= 12 && hour < 17) return "afternoon";
+  if (hour >= 17 && hour < 21) return "evening";
+  return "night";
+}
+
+export function getReflectionBlockMeta(date = new Date()) {
+  const block = getReflectionBlock(date);
+
+  return {
+    key: block,
+    ...reflectionBlocks[block]
+  };
+}
+
+export function getReflectionsForBlock(block) {
+  const blockConfig = reflectionBlocks[block];
+
+  if (!blockConfig) {
+    return [];
+  }
+
+  return blockConfig.reflectionIds
+    .map(getReflectionById)
+    .filter(Boolean);
+}
+
+export function getReflectionsForFocus(focus) {
+  const focusConfig = reflectionFocuses[focus];
+
+  if (!focusConfig) {
+    return [];
+  }
+
+  return focusConfig.reflectionIds
+    .map(getReflectionById)
+    .filter(Boolean);
+}
+
+function getPreferredBlock(date, preferences = {}) {
+  if (preferences.rhythm === "morning") return "morning";
+  if (preferences.rhythm === "evening") return "evening";
+  if (preferences.rhythm === "night") return "night";
+
+  if (preferences.rhythm === "surprise") {
+    return null;
+  }
+
+  if (preferences.orb && preferences.orb !== "auto") {
+    return blockByOrb[preferences.orb] || getReflectionBlock(date);
+  }
+
+  return getReflectionBlock(date);
+}
+
+function getReflectionCandidates(date, preferences = {}) {
+  const preferredBlock = getPreferredBlock(date, preferences);
+  const blockReflections = preferredBlock ? getReflectionsForBlock(preferredBlock) : reflections;
+
+  if (!preferences.focus) {
+    return blockReflections;
+  }
+
+  const focusReflections = getReflectionsForFocus(preferences.focus);
+  const focusIds = new Set(focusReflections.map((reflection) => reflection.id));
+  const focusedBlockReflections = blockReflections.filter((reflection) => focusIds.has(reflection.id));
+
+  return focusedBlockReflections.length > 0 ? focusedBlockReflections : focusReflections;
+}
+
+export function getDailyReflection(date = new Date(), preferences = {}) {
+  const blockReflections = getReflectionCandidates(date, preferences);
+
+  if (blockReflections.length === 0) {
+    return reflections[0];
+  }
+
+  const hour = date.getHours();
+  const block = getPreferredBlock(date, preferences) || getReflectionBlock(date);
+  const blockStartHour = block === "morning" ? 5 : block === "afternoon" ? 12 : block === "evening" ? 17 : 21;
+  const adjustedHour = hour < 5 ? hour + 24 : hour;
+  const minutesSinceBlockStart = (adjustedHour - blockStartHour) * 60 + date.getMinutes();
+  const slot = Math.floor(minutesSinceBlockStart / 30);
+
+  return blockReflections[(getDaySeed(date) + slot) % blockReflections.length];
+}
+
+export function getDailyOrbLine(date = new Date(), preferences = {}) {
+  return getDailyReflection(date, preferences)?.line || "";
+}
+
+export function getSocialReflections(block = null) {
+  return block ? getReflectionsForBlock(block) : reflections;
 }
 
 export default reflections;

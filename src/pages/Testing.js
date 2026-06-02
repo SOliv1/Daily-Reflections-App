@@ -1,297 +1,218 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import reflections, { getDailyReflection } from "../data/reflections";
+import {
+  getDailyReflection,
+  getReflectionBlockMeta,
+  reflectionFocuses
+} from "../data/reflections";
+import {
+  readQuietRoomPreferences,
+  writeQuietRoomPreferences
+} from "../data/quietRoomPreferences";
 import "./Testing.css";
-import { heroImages } from "../components/heroImagesConfig";
-import { useState as useReactState } from "react";
 
-const previewDates = [
-  { label: "Sunday", value: "2026-05-17" },
-  { label: "Monday", value: "2026-05-18" },
-  { label: "Tuesday", value: "2026-05-19" },
-  { label: "Wednesday", value: "2026-05-20" },
-  { label: "Thursday", value: "2026-05-21" },
-  { label: "Friday", value: "2026-05-22" },
-  { label: "Saturday", value: "2026-05-23" },
+const rhythmChoices = [
+  { id: "auto", label: "Let the day guide me" },
+  { id: "morning", label: "Show me morning clarity" },
+  { id: "evening", label: "Show me evening warmth" },
+  { id: "night", label: "Show me night calm" },
+  { id: "surprise", label: "Surprise me gently" }
 ];
 
-function readSavedFavourites() {
-  try {
-    const saved = JSON.parse(localStorage.getItem("favourites")) || [];
-    return Array.isArray(saved) ? saved : [];
-  } catch {
-    return [];
+const focusChoices = [
+  { id: "thoughtful", label: "Thoughtful moments" },
+  { id: "cherish", label: "Cherished ideas" },
+  { id: "readiness", label: "Quiet readiness" },
+  { id: "release", label: "Soft release" },
+  { id: "timeless", label: "Timeless calm" }
+];
+
+const orbChoices = [
+  { id: "auto", label: "Auto" },
+  { id: "dawn", label: "Dawn" },
+  { id: "neutral", label: "Neutral" },
+  { id: "warm", label: "Warm" },
+  { id: "night", label: "Night" },
+  { id: "midnight", label: "Midnight" }
+];
+
+const DAILY_ORB_URL = "https://soliv1.github.io/Daily-Reflections-App/";
+const SEASONAL_STUDIO_URL = "https://seasonal.studio/";
+
+function getOrbLabel(preferences, blockMeta) {
+  if (preferences.orb === "auto") {
+    return blockMeta.orb;
   }
+
+  const selectedOrb = orbChoices.find((orb) => orb.id === preferences.orb);
+  return selectedOrb ? `${selectedOrb.label} Orb` : blockMeta.orb;
 }
 
-function getRotationIndex(mode, customIndex = null) {
-  const now = new Date();
-  switch (mode) {
-    case "daily":
-      const start = new Date(now.getFullYear(), 0, 0);
-      const diff = now - start;
-      const day = Math.floor(diff / (1000 * 60 * 60 * 24));
-      return day % heroImages.length;
-    case "monthly":
-      return now.getMonth() % heroImages.length;
-    case "weekly":
-      const startYear = new Date(now.getFullYear(), 0, 1);
-      const week = Math.floor((now - startYear) / (7 * 24 * 60 * 60 * 1000));
-      return week % heroImages.length;
-    case "custom":
-      return customIndex !== null ? customIndex : 0;
-    default:
-      return 0;
-  }
+function getShareText({ reflection, focusLabel, orbLabel }) {
+  return [
+    `"${reflection.line}"`,
+    "",
+    reflection.title,
+    `${focusLabel} - ${orbLabel}`,
+    "",
+    "Shared from Daily Orb: Reflections.",
+    "A Reflections in Light space by Seasonal.Studio.",
+    DAILY_ORB_URL,
+    SEASONAL_STUDIO_URL
+  ].join("\n");
 }
 
-function Testing() {
-  const [favourites, setFavourites] = useState([]);
-  const [loadedImages, setLoadedImages] = useState({});
-  const [selectedMood, setSelectedMood] = useState("all");
-  const [rotationMode, setRotationMode] = useReactState("weekly");
-  const [customIndex, setCustomIndex] = useReactState(0);
-  const index = getRotationIndex(rotationMode, customIndex);
-  const heroImage = `${process.env.PUBLIC_URL}/images/${heroImages[index]}`;
-  const heroFilename = heroImages[index];
+function QuietRoom() {
+  const [preferences, setPreferences] = useState(() => readQuietRoomPreferences());
+  const [shareMessage, setShareMessage] = useState("");
+  const today = useMemo(() => new Date(), []);
+  const reflection = getDailyReflection(today, preferences);
+  const blockMeta = getReflectionBlockMeta(today);
+  const selectedFocus = preferences.focus ? reflectionFocuses[preferences.focus] : null;
+  const focusLabel = selectedFocus?.label || blockMeta.category;
+  const orbLabel = getOrbLabel(preferences, blockMeta);
 
-  useEffect(() => {
-    setFavourites(readSavedFavourites());
-  }, []);
-
-  const dailyPreview = useMemo(
-    () =>
-      previewDates.map((item) => ({
-        ...item,
-        reflection: getDailyReflection(new Date(`${item.value}T12:00:00`)),
-      })),
-    []
-  );
-
-  const dailyReflectionIds = useMemo(
-    () => new Set(dailyPreview.map((item) => item.reflection.id)),
-    [dailyPreview]
-  );
-
-  const moods = useMemo(
-    () => Array.from(new Set(reflections.map((reflection) => reflection.mood))).sort(),
-    []
-  );
-
-  const visibleReflections = useMemo(
-    () =>
-      selectedMood === "all"
-        ? reflections
-        : reflections.filter((reflection) => reflection.mood === selectedMood),
-    [selectedMood]
-  );
-
-  const persistFavourites = (updated) => {
-    setFavourites(updated);
-    localStorage.setItem("favourites", JSON.stringify(updated));
-  };
-
-  const toggleFavourite = (id) => {
-    const updated = favourites.includes(id)
-      ? favourites.filter((favId) => favId !== id)
-      : [...favourites, id];
-
-    persistFavourites(updated);
-  };
-
-  const clearFavourites = () => {
-    persistFavourites([]);
-  };
-
-  const reloadFavourites = () => {
-    setFavourites(readSavedFavourites());
-  };
-
-  const markImage = (id, status) => {
-    setLoadedImages((current) => ({
+  const choose = (key, value) => {
+    setPreferences((current) => writeQuietRoomPreferences({
       ...current,
-      [id]: status,
+      [key]: value
     }));
   };
 
+  const shareReflection = async () => {
+    const text = getShareText({ reflection, focusLabel, orbLabel });
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: reflection.title,
+          text
+        });
+        setShareMessage("Shared gently.");
+        return;
+      }
+
+      await navigator.clipboard.writeText(text);
+      setShareMessage("Copied for sharing.");
+    } catch {
+      setShareMessage("The reflection is here when you are ready.");
+    }
+  };
+
   return (
-    <main className="testing-page page-fade">
-      <section className="testing-section testing-intro">
-        <h1>Testing</h1>
-        <p>
-          Check the full reflection library, daily rotation, image rendering, and
-          favourites persistence from one place.
-        </p>
-      </section>
-
-      {/* Hero Image Rotation Preview */}
-      {process.env.NODE_ENV === "development" && (
-        <section className="testing-section">
-          <div className="testing-section-header">
-            <h2>Hero Image Rotation</h2>
-            <label>
-              Rotation Mode:
-              <select value={rotationMode} onChange={e => setRotationMode(e.target.value)}>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="custom">Manual</option>
-              </select>
-            </label>
-            {rotationMode === "custom" && (
-              <label style={{ marginLeft: 16 }}>
-                Image:
-                <select value={customIndex} onChange={e => setCustomIndex(Number(e.target.value))}>
-                  {heroImages.map((img, i) => (
-                    <option key={img} value={i}>{img}</option>
-                  ))}
-                </select>
-              </label>
-            )}
-            <p className="testing-muted">Currently showing: {heroFilename}</p>
-          </div>
-          <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <img
-              src={heroImage}
-              alt={heroFilename}
-              style={{ maxWidth: 400, width: "100%", borderRadius: 12, boxShadow: "0 2px 12px #0002" }}
-            />
-          </div>
-        </section>
-      )}
-
-      <section className="testing-section">
-        <div className="testing-section-header">
-          <h2>Daily Rotation</h2>
-          <Link to="/today" className="testing-link-button">
-            Today page
-          </Link>
+    <main
+      className="quiet-room page-fade"
+      style={{ "--quiet-midnight-orb": `url(${process.env.PUBLIC_URL}/images/orbs/orb-midnight-glow.png)` }}
+    >
+      <section className="quiet-room-hero">
+        <div className="quiet-room-hero-light" aria-hidden="true" />
+        <div className="quiet-room-hero-copy">
+          <p className="quiet-room-kicker">The Quiet Room</p>
+          <h1>Your Atmosphere</h1>
+          <p>
+            A soft interior for shaping the feeling of today before you carry it
+            back into the app.
+          </p>
         </div>
 
-        <div className="testing-day-grid">
-          {dailyPreview.map((item) => (
-            <Link
-              key={item.value}
-              to={`/today?date=${item.value}`}
-              className="testing-day"
-            >
-              <span>{item.label}</span>
-              <strong>{item.reflection.title}</strong>
-              <small>{item.value}</small>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="testing-section">
-        <div className="testing-section-header">
-          <div>
-            <h2>Favourites Persistence</h2>
-            <p className="testing-muted">
-              Saved IDs in localStorage: {JSON.stringify(favourites)}
-            </p>
-          </div>
-
-          <div className="testing-actions">
-            <button type="button" onClick={reloadFavourites}>
-              Reload saved
-            </button>
-            <button type="button" onClick={clearFavourites}>
-              Clear
-            </button>
-            <Link to="/favourites" className="testing-link-button">
-              Favourites page
-            </Link>
-          </div>
+        <div className="quiet-room-orb-stage">
+          <div className={`quiet-room-orb quiet-room-orb-${preferences.orb || "auto"}`} aria-hidden="true" />
+          <span>{preferences.orb === "auto" ? "Listening to the day" : "Holding your chosen light"}</span>
         </div>
 
-        <p className="testing-muted">
-          Save a few reflections here, open the Favourites page, then refresh the
-          browser. The same cards should still be there until you remove or clear
-          them.
-        </p>
+        <a
+          className="quiet-room-brand-orb"
+          href={SEASONAL_STUDIO_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Seasonal.Studio"
+        >
+          <img
+            src={`${process.env.PUBLIC_URL}/images/logos/r-logo-pearl-128.png`}
+            alt=""
+            aria-hidden="true"
+          />
+          <span>Seasonal.Studio</span>
+        </a>
       </section>
 
-      <section className="testing-section">
-        <div className="testing-section-header">
-          <div>
-            <h2>All Reflections</h2>
-            <p className="testing-muted">
-              Review the image, quote, mood, daily rotation status, and source
-              path before publishing content changes.
-            </p>
-          </div>
-
-          <label className="testing-filter">
-            Mood
-            <select
-              value={selectedMood}
-              onChange={(event) => setSelectedMood(event.target.value)}
-            >
-              <option value="all">All moods</option>
-              {moods.map((mood) => (
-                <option key={mood} value={mood}>
-                  {mood}
-                </option>
+      <section className="quiet-room-layout" aria-label="Your atmosphere choices">
+        <div className="quiet-room-wing quiet-room-wing-left">
+          <section className="quiet-room-panel quiet-room-panel-tall">
+            <p className="quiet-room-kicker">Today's rhythm</p>
+            <p className="quiet-room-question">How would you like today to feel?</p>
+            <div className="quiet-room-sentences">
+              {rhythmChoices.map((choice) => (
+                <button
+                  key={choice.id}
+                  type="button"
+                  className={preferences.rhythm === choice.id ? "quiet-choice selected" : "quiet-choice"}
+                  onClick={() => choose("rhythm", choice.id)}
+                >
+                  {choice.label}
+                </button>
               ))}
-            </select>
-          </label>
+            </div>
+          </section>
         </div>
 
-        <div className="testing-reflection-grid">
-          {visibleReflections.map((reflection) => {
-            const isFavourite = favourites.includes(reflection.id);
-            const imageStatus = loadedImages[reflection.id] || "checking";
-            const appearsDaily = dailyReflectionIds.has(reflection.id);
+        <section className="quiet-room-reflection">
+          <p className="quiet-room-kicker">Held in the room</p>
+          <h2>{reflection.title}</h2>
+          <blockquote>{reflection.line}</blockquote>
+          <p>
+            {focusLabel} · {orbLabel}
+          </p>
+          <div className="quiet-room-actions">
+            <Link to="/today" className="quiet-room-link">
+              Carry this into today
+            </Link>
+            <button type="button" className="quiet-room-link" onClick={shareReflection}>
+              Share this reflection
+            </button>
+          </div>
+          {shareMessage && <p className="quiet-room-share-note">{shareMessage}</p>}
+        </section>
 
-            return (
-              <article key={reflection.id} className="testing-card">
-                <img
-                  src={reflection.image}
-                  alt={reflection.title || `Reflection ${reflection.id}`}
-                  onLoad={() => markImage(reflection.id, "loaded")}
-                  onError={() => markImage(reflection.id, "failed")}
-                />
+        <div className="quiet-room-wing quiet-room-wing-right">
+          <section className="quiet-room-panel">
+            <p className="quiet-room-kicker">Close by</p>
+            <p className="quiet-room-question">What kind of reflection would you like close by?</p>
+            <div className="quiet-room-pills">
+              {focusChoices.map((choice) => (
+                <button
+                  key={choice.id}
+                  type="button"
+                  className={preferences.focus === choice.id ? "quiet-pill selected" : "quiet-pill"}
+                  onClick={() => choose("focus", choice.id)}
+                >
+                  {choice.label}
+                </button>
+              ))}
+            </div>
+          </section>
 
-                <div className="testing-card-body">
-                  <div className="testing-card-topline">
-                    <span>#{reflection.id}</span>
-                    <div className="testing-badges">
-                      <span
-                        className={
-                          appearsDaily
-                            ? "testing-status testing-status-daily"
-                            : "testing-status"
-                        }
-                      >
-                        {appearsDaily ? "Daily rotation" : "Library only"}
-                      </span>
-                      <span className={`testing-status testing-status-${imageStatus}`}>
-                        Image {imageStatus}
-                      </span>
-                    </div>
-                  </div>
-
-                  <h3>{reflection.title || "Untitled reflection"}</h3>
-                  <p className="testing-line">{reflection.line}</p>
-                  <p className="testing-muted">Mood: {reflection.mood}</p>
-                  <code className="testing-path">{reflection.image}</code>
-
-                  <button
-                    type="button"
-                    className={isFavourite ? "testing-fav saved" : "testing-fav"}
-                    onClick={() => toggleFavourite(reflection.id)}
-                  >
-                    {isFavourite ? "Saved" : "Save"}
-                  </button>
-                </div>
-              </article>
-            );
-          })}
+          <section className="quiet-room-panel">
+            <p className="quiet-room-kicker">Companion light</p>
+            <p className="quiet-room-question">Which orb accompanies you today?</p>
+            <div className="quiet-room-orb-row">
+              {orbChoices.map((choice) => (
+                <button
+                  key={choice.id}
+                  type="button"
+                  className={preferences.orb === choice.id ? "quiet-orb-choice selected" : "quiet-orb-choice"}
+                  onClick={() => choose("orb", choice.id)}
+                >
+                  <span className={`quiet-orb-dot quiet-orb-dot-${choice.id}`} aria-hidden="true" />
+                  <span>{choice.label}</span>
+                </button>
+              ))}
+            </div>
+          </section>
         </div>
       </section>
     </main>
   );
 }
 
-export default Testing;
+export default QuietRoom;

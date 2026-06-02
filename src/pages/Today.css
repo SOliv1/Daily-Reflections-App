@@ -32,6 +32,15 @@
     margin-bottom: 20px;
 }
 
+.today-block {
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    line-height: 1.5;
+    text-transform: uppercase;
+    opacity: 0.62;
+    margin: 0 0 14px;
+}
+
 .return-button {
     display: inline-block;
     margin-bottom: 20px;

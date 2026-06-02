@@ -1,9 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Navigate, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Today from "./pages/Today";
 import Favourites from "./pages/Favourites";
 import About from "./pages/About";
-import Testing from "./pages/Testing";
+import QuietRoom from "./pages/Testing";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
@@ -21,7 +21,8 @@ function App() {
         <Route path="/today" element={<Today />} />
         <Route path="/favourites" element={<Favourites />} />
         <Route path="/about" element={<About />} />
-        <Route path="/testing" element={<Testing />} />
+        <Route path="/quiet-room" element={<QuietRoom />} />
+        <Route path="/testing" element={<Navigate to="/quiet-room" replace />} />
       </Routes>
       <Footer />
 

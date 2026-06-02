@@ -1,62 +1,90 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import Testing from "./Testing";
+import { QUIET_ROOM_STORAGE_KEY } from "../data/quietRoomPreferences";
+import QuietRoom from "./Testing";
 
-function renderTestingPage() {
+function renderQuietRoom() {
   render(
     <MemoryRouter>
-      <Testing />
+      <QuietRoom />
     </MemoryRouter>
   );
 }
 
-describe("Testing page", () => {
+describe("Quiet Room", () => {
   beforeEach(() => {
     localStorage.clear();
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: jest.fn().mockResolvedValue(undefined)
+      }
+    });
+    Object.defineProperty(navigator, "share", {
+      configurable: true,
+      value: undefined
+    });
   });
 
-  test("shows daily preview links and the full reflection library", () => {
-    renderTestingPage();
+  test("presents atmospheric choices instead of developer language", () => {
+    renderQuietRoom();
 
-    expect(screen.getByRole("heading", { name: /testing/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /sunday still water/i })).toHaveAttribute(
+    expect(screen.getByRole("heading", { name: /your atmosphere/i })).toBeInTheDocument();
+    expect(screen.getByText(/the quiet room/i)).toBeInTheDocument();
+    expect(screen.getByText(/how would you like today to feel/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /let the day guide me/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /thoughtful moments/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /dawn/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /midnight/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /seasonal\.studio/i })).toHaveAttribute(
       "href",
-      "/today?date=2026-05-17"
+      "https://seasonal.studio/"
     );
-    expect(screen.getByRole("heading", { name: /soft breeze orb/i })).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: "Save" })).toHaveLength(12);
-    expect(screen.getAllByText("Daily rotation")).toHaveLength(7);
-    expect(screen.getAllByText("Library only")).toHaveLength(5);
-    expect(screen.getByText(/\/images\/reflections1.png/i)).toBeInTheDocument();
+    expect(screen.queryByText(/testing/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/localstorage/i)).not.toBeInTheDocument();
   });
 
-  test("filters the content board by mood", () => {
-    renderTestingPage();
+  test("stores quiet choices behind the room experience", () => {
+    renderQuietRoom();
 
-    userEvent.selectOptions(screen.getByLabelText(/mood/i), "ease");
+    userEvent.click(screen.getByRole("button", { name: /show me night calm/i }));
+    userEvent.click(screen.getByRole("button", { name: /timeless calm/i }));
+    userEvent.click(screen.getByRole("button", { name: /^midnight$/i }));
 
-    expect(screen.getByRole("heading", { name: /gentle tide/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /soft breeze orb/i })).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: /still water/i })).not.toBeInTheDocument();
+    expect(JSON.parse(localStorage.getItem(QUIET_ROOM_STORAGE_KEY))).toEqual({
+      rhythm: "night",
+      focus: "timeless",
+      orb: "midnight"
+    });
   });
 
-  test("saves, reloads, and clears favourites using localStorage", () => {
-    renderTestingPage();
+  test("offers the selected reflection as a continuation into Today", () => {
+    renderQuietRoom();
 
-    userEvent.click(screen.getAllByRole("button", { name: "Save" })[0]);
+    expect(screen.getByRole("link", { name: /carry this into today/i })).toHaveAttribute(
+      "href",
+      "/today"
+    );
+  });
 
-    expect(localStorage.getItem("favourites")).toBe(JSON.stringify([1]));
-    expect(screen.getByText(/saved ids in localstorage: \[1\]/i)).toBeInTheDocument();
+  test("copies a social-ready reflection when sharing", async () => {
+    renderQuietRoom();
 
-    localStorage.setItem("favourites", JSON.stringify([2]));
-    userEvent.click(screen.getByRole("button", { name: /reload saved/i }));
+    userEvent.click(screen.getByRole("button", { name: /share this reflection/i }));
 
-    expect(screen.getByText(/saved ids in localstorage: \[2\]/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+        expect.stringContaining("Shared from Daily Orb: Reflections.")
+      );
+    });
+    const sharedText = navigator.clipboard.writeText.mock.calls[0][0];
 
-    userEvent.click(screen.getByRole("button", { name: /clear/i }));
-
-    expect(localStorage.getItem("favourites")).toBe(JSON.stringify([]));
-    expect(screen.getByText(/saved ids in localstorage: \[\]/i)).toBeInTheDocument();
+    expect(sharedText).toEqual(expect.stringContaining("A Reflections in Light space by Seasonal.Studio."));
+    expect(sharedText).toEqual(expect.stringContaining("https://soliv1.github.io/Daily-Reflections-App/"));
+    expect(sharedText).toEqual(expect.stringContaining("https://seasonal.studio/"));
+    await waitFor(() => {
+      expect(screen.getByText(/copied for sharing/i)).toBeInTheDocument();
+    });
   });
 });

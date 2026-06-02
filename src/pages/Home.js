@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Home.css";
 import { heroImages } from "../components/heroImagesConfig";
-import { useState as useReactState } from "react";
+import { getDailyReflection, getReflectionBlockMeta } from "../data/reflections";
+import { readQuietRoomPreferences } from "../data/quietRoomPreferences";
 
 function getRotationIndex(mode, customIndex = null) {
   const now = new Date();
@@ -26,33 +27,37 @@ function getRotationIndex(mode, customIndex = null) {
 }
 
 function Home() {
-  // ...existing code...
+  const [now, setNow] = useState(() => new Date());
+  const [quietRoomPreferences, setQuietRoomPreferences] = useState(() => readQuietRoomPreferences());
 
-  // Restore hour for time-based logic
-  const hour = new Date().getHours();
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setNow(new Date());
+      setQuietRoomPreferences(readQuietRoomPreferences());
+    }, 60 * 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
+  const hour = now.getHours();
 
   // Restore bgClass for background styling
   let bgClass = "bg-day";
-  if (hour >= 5 && hour < 10) bgClass = "bg-dawn";
-  else if (hour >= 10 && hour < 17) bgClass = "bg-day";
-  else if (hour >= 17 && hour < 20) bgClass = "bg-dusk";
+  if (hour >= 5 && hour < 12) bgClass = "bg-dawn";
+  else if (hour >= 12 && hour < 17) bgClass = "bg-day";
+  else if (hour >= 17 && hour < 21) bgClass = "bg-dusk";
   else bgClass = "bg-night";
 
-  const [rotationMode, setRotationMode] = useReactState("weekly");
-  const [customIndex, setCustomIndex] = useReactState(0);
+  const [rotationMode, setRotationMode] = useState("weekly");
+  const [customIndex, setCustomIndex] = useState(0);
   const index = getRotationIndex(rotationMode, customIndex);
   const heroImage = `${process.env.PUBLIC_URL}/images/${heroImages[index]}`;
   const heroFilename = heroImages[index];
 
   let textClass = "text-day";
-  if (hour >= 5 && hour < 10) textClass = "text-dawn";
-  else if (hour >= 10 && hour < 17) textClass = "text-day";
-  else if (hour >= 17 && hour < 20) textClass = "text-dusk";
-  else textClass = "text-night";
-
-  if (hour >= 5 && hour < 10) textClass = "text-dawn";
-  else if (hour >= 10 && hour < 17) textClass = "text-day";
-  else if (hour >= 17 && hour < 20) textClass = "text-dusk";
+  if (hour >= 5 && hour < 12) textClass = "text-dawn";
+  else if (hour >= 12 && hour < 17) textClass = "text-day";
+  else if (hour >= 17 && hour < 21) textClass = "text-dusk";
   else textClass = "text-night";
 
   // Determine season
@@ -70,27 +75,8 @@ function Home() {
     seasonClass = "season-winter";   // Dec–Feb
   }
 
-  const seasonalQuotes = {
-  "season-spring": [
-    "New light finds its way in quiet moments.",
-    "Clarity grows where gentleness begins."
-  ],
-  "season-summer": [
-    "Warmth softens the edges of the day.",
-    "A bright moment can shift everything."
-  ],
-  "season-autumn": [
-    "Let the day settle into something softer.",
-    "Evening light carries its own kind of clarity."
-  ],
-  "season-winter": [
-    "Stillness reveals what we often overlook.",
-    "A quiet moment can warm the whole day."
-  ]
-};
-
-  const quoteList = seasonalQuotes[seasonClass];
-  const quote = quoteList[Math.floor(Math.random() * quoteList.length)];
+  const reflection = getDailyReflection(now, quietRoomPreferences);
+  const reflectionBlock = getReflectionBlockMeta(now);
 
   return (
     <div className={`home-container ${bgClass} ${seasonClass.replace("season", "bg")}`}>
@@ -137,8 +123,12 @@ function Home() {
 
       <blockquote className={`seasonal-quotes
          ${textClass} ${seasonClass}`}>
-        {quote}
+        {reflection.line}
       </blockquote>
+
+      <p className={`home-reflection-meta ${textClass} ${seasonClass}`}>
+        {reflectionBlock.label} · {reflectionBlock.orb} · {reflection.title}
+      </p>
 
       <nav className="home-links">
         <Link to="/today" className="home-link">Today</Link>

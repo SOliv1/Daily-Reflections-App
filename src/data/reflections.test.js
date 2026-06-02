@@ -1,15 +1,21 @@
 import fs from "fs";
 import path from "path";
-import reflections, { getDailyOrbLine, getDailyReflection } from "./reflections";
+import reflections, {
+  getDailyOrbLine,
+  getDailyReflection,
+  getReflectionBlock,
+  getReflectionsForBlock,
+  reflectionBlocks
+} from "./reflections";
 
 const dayDates = [
-  new Date("2026-05-17T12:00:00Z"),
-  new Date("2026-05-18T12:00:00Z"),
-  new Date("2026-05-19T12:00:00Z"),
-  new Date("2026-05-20T12:00:00Z"),
-  new Date("2026-05-21T12:00:00Z"),
-  new Date("2026-05-22T12:00:00Z"),
-  new Date("2026-05-23T12:00:00Z"),
+  new Date("2026-05-17T12:00:00"),
+  new Date("2026-05-18T12:00:00"),
+  new Date("2026-05-19T12:00:00"),
+  new Date("2026-05-20T12:00:00"),
+  new Date("2026-05-21T12:00:00"),
+  new Date("2026-05-22T12:00:00"),
+  new Date("2026-05-23T12:00:00"),
 ];
 
 function publicImagePath(image) {
@@ -46,9 +52,37 @@ describe("daily reflections data", () => {
     });
   });
 
-  test("daily rotation uses the expected seven reflections", () => {
-    const dailyReflectionIds = dayDates.map((date) => getDailyReflection(date).id);
+  test("time-of-day blocks use the expected boundaries", () => {
+    expect(getReflectionBlock(new Date("2026-05-20T05:00:00"))).toBe("morning");
+    expect(getReflectionBlock(new Date("2026-05-20T11:59:00"))).toBe("morning");
+    expect(getReflectionBlock(new Date("2026-05-20T12:00:00"))).toBe("afternoon");
+    expect(getReflectionBlock(new Date("2026-05-20T16:59:00"))).toBe("afternoon");
+    expect(getReflectionBlock(new Date("2026-05-20T17:00:00"))).toBe("evening");
+    expect(getReflectionBlock(new Date("2026-05-20T20:59:00"))).toBe("evening");
+    expect(getReflectionBlock(new Date("2026-05-20T21:00:00"))).toBe("night");
+    expect(getReflectionBlock(new Date("2026-05-20T04:59:00"))).toBe("night");
+  });
 
-    expect(dailyReflectionIds).toEqual(reflections.slice(0, 7).map((item) => item.id));
+  test("time blocks point to existing reflections and can grow beyond seven items", () => {
+    Object.keys(reflectionBlocks).forEach((block) => {
+      const blockReflections = getReflectionsForBlock(block);
+
+      expect(blockReflections.length).toBe(reflectionBlocks[block].reflectionIds.length);
+      blockReflections.forEach((reflection) => {
+        expect(reflections.some((item) => item.id === reflection.id)).toBe(true);
+      });
+    });
+  });
+
+  test("daily rotation selects from the active time block, not a fixed seven-item list", () => {
+    const morningReflection = getDailyReflection(new Date("2026-05-20T05:00:00"));
+    const afternoonReflection = getDailyReflection(new Date("2026-05-20T12:00:00"));
+    const eveningReflection = getDailyReflection(new Date("2026-05-20T17:00:00"));
+    const nightReflection = getDailyReflection(new Date("2026-05-20T21:00:00"));
+
+    expect(reflectionBlocks.morning.reflectionIds).toContain(morningReflection.id);
+    expect(reflectionBlocks.afternoon.reflectionIds).toContain(afternoonReflection.id);
+    expect(reflectionBlocks.evening.reflectionIds).toContain(eveningReflection.id);
+    expect(reflectionBlocks.night.reflectionIds).toContain(nightReflection.id);
   });
 });
