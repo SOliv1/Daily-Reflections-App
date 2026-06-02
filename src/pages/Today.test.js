@@ -28,5 +28,7 @@ describe("Today page date preview", () => {
       "src",
       reflection.image
     );
+    expect(screen.getByRole("link", { name: /home/i })).toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: /quiet room/i })).toHaveAttribute("href", "/quiet-room");
   });
 });

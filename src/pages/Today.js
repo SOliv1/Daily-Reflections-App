@@ -20,7 +20,10 @@ function Today() {
   return (
     <div className="today-container page-fade">
 
-      <Link to="/" className="return-button">← Home</Link>
+      <nav className="today-return-nav" aria-label="Return options">
+        <Link to="/" className="return-button">← Home</Link>
+        <Link to="/quiet-room" className="return-button">Quiet Room</Link>
+      </nav>
 
       <img
         src={reflection.image}
