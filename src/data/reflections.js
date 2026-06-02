@@ -234,6 +234,15 @@ export function getReflectionBlockMeta(date = new Date()) {
   };
 }
 
+export function getPreferredReflectionBlockMeta(date = new Date(), preferences = {}) {
+  const block = getPreferredBlock(date, preferences) || getReflectionBlock(date);
+
+  return {
+    key: block,
+    ...reflectionBlocks[block]
+  };
+}
+
 export function getReflectionsForBlock(block) {
   const blockConfig = reflectionBlocks[block];
 
@@ -274,9 +283,32 @@ function getPreferredBlock(date, preferences = {}) {
   return getReflectionBlock(date);
 }
 
+function getBlockStartHour(block) {
+  if (block === "morning") return 5;
+  if (block === "afternoon") return 12;
+  if (block === "evening") return 17;
+  return 21;
+}
+
+function getBlockSlot(date, block) {
+  const actualBlock = getReflectionBlock(date);
+  const hour = date.getHours();
+
+  if (block !== actualBlock) {
+    return Math.floor(((hour * 60) + date.getMinutes()) / 30);
+  }
+
+  const blockStartHour = getBlockStartHour(block);
+  const adjustedHour = hour < 5 ? hour + 24 : hour;
+  const minutesSinceBlockStart = (adjustedHour - blockStartHour) * 60 + date.getMinutes();
+
+  return Math.max(0, Math.floor(minutesSinceBlockStart / 30));
+}
+
 function getReflectionCandidates(date, preferences = {}) {
   const preferredBlock = getPreferredBlock(date, preferences);
   const blockReflections = preferredBlock ? getReflectionsForBlock(preferredBlock) : reflections;
+  const hasExplicitRhythm = ["morning", "evening", "night"].includes(preferences.rhythm);
 
   if (!preferences.focus) {
     return blockReflections;
@@ -286,7 +318,16 @@ function getReflectionCandidates(date, preferences = {}) {
   const focusIds = new Set(focusReflections.map((reflection) => reflection.id));
   const focusedBlockReflections = blockReflections.filter((reflection) => focusIds.has(reflection.id));
 
-  return focusedBlockReflections.length > 0 ? focusedBlockReflections : focusReflections;
+  if (focusedBlockReflections.length > 0) {
+    return focusedBlockReflections;
+  }
+
+  // If the user explicitly chose a rhythm, keep that atmosphere primary.
+  if (hasExplicitRhythm && preferredBlock) {
+    return blockReflections;
+  }
+
+  return focusReflections.length > 0 ? focusReflections : blockReflections;
 }
 
 export function getDailyReflection(date = new Date(), preferences = {}) {
@@ -296,14 +337,11 @@ export function getDailyReflection(date = new Date(), preferences = {}) {
     return reflections[0];
   }
 
-  const hour = date.getHours();
   const block = getPreferredBlock(date, preferences) || getReflectionBlock(date);
-  const blockStartHour = block === "morning" ? 5 : block === "afternoon" ? 12 : block === "evening" ? 17 : 21;
-  const adjustedHour = hour < 5 ? hour + 24 : hour;
-  const minutesSinceBlockStart = (adjustedHour - blockStartHour) * 60 + date.getMinutes();
-  const slot = Math.floor(minutesSinceBlockStart / 30);
+  const slot = getBlockSlot(date, block);
+  const surpriseOffset = Number(preferences.surpriseOffset) || 0;
 
-  return blockReflections[(getDaySeed(date) + slot) % blockReflections.length];
+  return blockReflections[(getDaySeed(date) + slot + surpriseOffset) % blockReflections.length];
 }
 
 export function getDailyOrbLine(date = new Date(), preferences = {}) {

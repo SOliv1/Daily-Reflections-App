@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { getDailyReflection, getReflectionBlockMeta } from "../data/reflections";
+import { getDailyReflection, getPreferredReflectionBlockMeta } from "../data/reflections";
 import { readQuietRoomPreferences } from "../data/quietRoomPreferences";
 import HeartButton from "../components/HeartButton";
 import "./Today.css";
@@ -11,7 +11,7 @@ function Today() {
   const selectedDate = dateParam ? new Date(`${dateParam}T12:00:00`) : new Date();
   const quietRoomPreferences = readQuietRoomPreferences();
   const reflection = getDailyReflection(selectedDate, quietRoomPreferences);
-  const reflectionBlock = getReflectionBlockMeta(selectedDate);
+  const reflectionBlock = getPreferredReflectionBlockMeta(selectedDate, quietRoomPreferences);
 
   if (!reflection) {
     return <p>No reflection found for today.</p>;

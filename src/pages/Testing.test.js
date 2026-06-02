@@ -1,7 +1,10 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { QUIET_ROOM_STORAGE_KEY } from "../data/quietRoomPreferences";
+import {
+  QUIET_ROOM_STORAGE_KEY,
+  defaultQuietRoomPreferences
+} from "../data/quietRoomPreferences";
 import QuietRoom from "./Testing";
 
 function renderQuietRoom() {
@@ -55,8 +58,42 @@ describe("Quiet Room", () => {
     expect(JSON.parse(localStorage.getItem(QUIET_ROOM_STORAGE_KEY))).toEqual({
       rhythm: "night",
       focus: "timeless",
-      orb: "midnight"
+      orb: "midnight",
+      orbSource: "manual",
+      surpriseOffset: 0
     });
+  });
+
+  test("responds when the rhythm changes", () => {
+    renderQuietRoom();
+
+    userEvent.click(screen.getByRole("button", { name: /show me morning clarity/i }));
+
+    expect(screen.getAllByText(/morning clarity enters the room/i).length).toBeGreaterThan(0);
+    expect(JSON.parse(localStorage.getItem(QUIET_ROOM_STORAGE_KEY))).toEqual(
+      expect.objectContaining({
+        rhythm: "morning",
+        orb: "dawn",
+        orbSource: "rhythm"
+      })
+    );
+  });
+
+  test("surprise me gently refreshes the held reflection", () => {
+    renderQuietRoom();
+
+    userEvent.click(screen.getByRole("button", { name: /surprise me gently/i }));
+    userEvent.click(screen.getByRole("button", { name: /surprise me gently/i }));
+
+    expect(JSON.parse(localStorage.getItem(QUIET_ROOM_STORAGE_KEY))).toEqual(
+      expect.objectContaining({
+        rhythm: "surprise",
+        orb: "auto",
+        orbSource: "rhythm",
+        surpriseOffset: 2
+      })
+    );
+    expect(screen.getAllByText(/a gentle surprise has arrived/i).length).toBeGreaterThan(0);
   });
 
   test("offers the selected reflection as a continuation into Today", () => {
@@ -86,5 +123,18 @@ describe("Quiet Room", () => {
     await waitFor(() => {
       expect(screen.getByText(/copied for sharing/i)).toBeInTheDocument();
     });
+  });
+
+  test("reset room restores default choices", () => {
+    renderQuietRoom();
+
+    userEvent.click(screen.getByRole("button", { name: /show me night calm/i }));
+    userEvent.click(screen.getByRole("button", { name: /timeless calm/i }));
+    userEvent.click(screen.getByRole("button", { name: /^midnight$/i }));
+    userEvent.click(screen.getByRole("button", { name: /reset room/i }));
+
+    expect(JSON.parse(localStorage.getItem(QUIET_ROOM_STORAGE_KEY))).toEqual(defaultQuietRoomPreferences);
+    expect(screen.getAllByText(/the room is listening to the hour you are in/i).length).toBeGreaterThan(0);
+    expect(screen.getByRole("status")).toHaveTextContent(/room reset to default/i);
   });
 });

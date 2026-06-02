@@ -3,7 +3,9 @@ export const QUIET_ROOM_STORAGE_KEY = "quietRoomPreferences";
 export const defaultQuietRoomPreferences = {
   rhythm: "auto",
   focus: null,
-  orb: "auto"
+  orb: "auto",
+  orbSource: "auto",
+  surpriseOffset: 0
 };
 
 export function readQuietRoomPreferences() {

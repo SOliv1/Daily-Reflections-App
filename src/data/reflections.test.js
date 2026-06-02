@@ -4,6 +4,7 @@ import reflections, {
   getDailyOrbLine,
   getDailyReflection,
   getReflectionBlock,
+  getPreferredReflectionBlockMeta,
   getReflectionsForBlock,
   reflectionBlocks
 } from "./reflections";
@@ -84,5 +85,26 @@ describe("daily reflections data", () => {
     expect(reflectionBlocks.afternoon.reflectionIds).toContain(afternoonReflection.id);
     expect(reflectionBlocks.evening.reflectionIds).toContain(eveningReflection.id);
     expect(reflectionBlocks.night.reflectionIds).toContain(nightReflection.id);
+  });
+
+  test("explicit rhythm stays primary when selected focus has no overlap", () => {
+    const reflection = getDailyReflection(new Date("2026-05-20T21:00:00"), {
+      rhythm: "evening",
+      focus: "readiness"
+    });
+
+    expect(reflectionBlocks.evening.reflectionIds).toContain(reflection.id);
+  });
+
+  test("preferred block metadata follows quiet room preferences", () => {
+    const selectedDate = new Date("2026-05-20T23:00:00");
+
+    const rhythmMeta = getPreferredReflectionBlockMeta(selectedDate, { rhythm: "evening" });
+    expect(rhythmMeta.key).toBe("evening");
+    expect(rhythmMeta.orb).toBe("Warm Orb");
+
+    const orbMeta = getPreferredReflectionBlockMeta(selectedDate, { orb: "warm" });
+    expect(orbMeta.key).toBe("evening");
+    expect(orbMeta.orb).toBe("Warm Orb");
   });
 });

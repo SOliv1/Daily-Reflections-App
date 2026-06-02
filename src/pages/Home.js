@@ -1,26 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Home.css";
-import { heroImages } from "../components/heroImagesConfig";
-import { getDailyReflection, getReflectionBlockMeta } from "../data/reflections";
+import { heroImages, heroImagesByBlock } from "../components/heroImagesConfig";
+import { getDailyReflection, getPreferredReflectionBlockMeta } from "../data/reflections";
 import { readQuietRoomPreferences } from "../data/quietRoomPreferences";
 
-function getRotationIndex(mode, customIndex = null) {
+function getRotationIndex(mode, imageCount, customIndex = null) {
+  if (!imageCount) {
+    return 0;
+  }
+
   const now = new Date();
   switch (mode) {
     case "daily":
       const start = new Date(now.getFullYear(), 0, 0);
       const diff = now - start;
       const day = Math.floor(diff / (1000 * 60 * 60 * 24));
-      return day % heroImages.length;
+      return day % imageCount;
     case "monthly":
-      return now.getMonth() % heroImages.length;
+      return now.getMonth() % imageCount;
     case "weekly":
       const startYear = new Date(now.getFullYear(), 0, 1);
       const week = Math.floor((now - startYear) / (7 * 24 * 60 * 60 * 1000));
-      return week % heroImages.length;
+      return week % imageCount;
     case "custom":
-      return customIndex !== null ? customIndex : 0;
+      return customIndex !== null ? Math.max(0, Math.min(customIndex, imageCount - 1)) : 0;
     default:
       return 0;
   }
@@ -50,9 +54,12 @@ function Home() {
 
   const [rotationMode, setRotationMode] = useState("weekly");
   const [customIndex, setCustomIndex] = useState(0);
-  const index = getRotationIndex(rotationMode, customIndex);
-  const heroImage = `${process.env.PUBLIC_URL}/images/${heroImages[index]}`;
-  const heroFilename = heroImages[index];
+  const reflection = getDailyReflection(now, quietRoomPreferences);
+  const reflectionBlock = getPreferredReflectionBlockMeta(now, quietRoomPreferences);
+  const activeHeroPool = heroImagesByBlock[reflectionBlock.key] || heroImages;
+  const index = getRotationIndex(rotationMode, activeHeroPool.length, customIndex);
+  const heroFilename = activeHeroPool[index] || heroImages[0];
+  const heroImage = `${process.env.PUBLIC_URL}/images/${heroFilename}`;
 
   let textClass = "text-day";
   if (hour >= 5 && hour < 12) textClass = "text-dawn";
@@ -75,9 +82,6 @@ function Home() {
     seasonClass = "season-winter";   // Dec–Feb
   }
 
-  const reflection = getDailyReflection(now, quietRoomPreferences);
-  const reflectionBlock = getReflectionBlockMeta(now);
-
   return (
     <div className={`home-container ${bgClass} ${seasonClass.replace("season", "bg")}`}>
       {/* Hero image rotation controls for preview/testing (development only) */}
@@ -96,7 +100,7 @@ function Home() {
             <label style={{ marginLeft: 16 }}>
               Image:
               <select value={customIndex} onChange={e => setCustomIndex(Number(e.target.value))}>
-                {heroImages.map((img, i) => (
+                {activeHeroPool.map((img, i) => (
                   <option key={img} value={i}>{img}</option>
                 ))}
               </select>
@@ -108,7 +112,7 @@ function Home() {
 
       <img
         src={heroImage}
-        alt="Soft Forest light"
+        alt={`${reflectionBlock.label} atmosphere`}
         className={`home-hero hero-shimmer ${seasonClass.replace("season", "hero")}`}
       />
       <div className="home-orb-small"></div>
