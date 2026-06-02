@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Daily-Reflections-App/static/css/main.9f28fe2c.css",
-    "main.js": "/Daily-Reflections-App/static/js/main.53b1baed.js",
+    "main.css": "/Daily-Reflections-App/static/css/main.deb7aea0.css",
+    "main.js": "/Daily-Reflections-App/static/js/main.acf31823.js",
     "static/js/453.45257a51.chunk.js": "/Daily-Reflections-App/static/js/453.45257a51.chunk.js",
     "index.html": "/Daily-Reflections-App/index.html",
-    "main.9f28fe2c.css.map": "/Daily-Reflections-App/static/css/main.9f28fe2c.css.map",
-    "main.53b1baed.js.map": "/Daily-Reflections-App/static/js/main.53b1baed.js.map",
+    "main.deb7aea0.css.map": "/Daily-Reflections-App/static/css/main.deb7aea0.css.map",
+    "main.acf31823.js.map": "/Daily-Reflections-App/static/js/main.acf31823.js.map",
     "453.45257a51.chunk.js.map": "/Daily-Reflections-App/static/js/453.45257a51.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.9f28fe2c.css",
-    "static/js/main.53b1baed.js"
+    "static/css/main.deb7aea0.css",
+    "static/js/main.acf31823.js"
   ]
 }
