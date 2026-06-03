@@ -71,7 +71,7 @@ const orbChoices = [
 ];
 
 const DAILY_ORB_URL = "https://soliv1.github.io/Daily-Reflections-App/";
-const CENTRE_NOTES_URL = "https://soliv1.github.io/Centre-Notes/";
+const CENTRE_NOTES_URL = "https://centre-notes.netlify.app/";
 const SEASONAL_STUDIO_URL = "https://seasonal.studio/";
 
 function getRhythmChoice(rhythm) {

@@ -128,7 +128,7 @@ describe("Quiet Room", () => {
     const centreNotesLink = screen.getByRole("link", { name: /write a small thought in centre notes/i });
 
     expect(centreNotesLink).toHaveTextContent(/write a small thought/i);
-    expect(centreNotesLink).toHaveAttribute("href", "https://soliv1.github.io/Centre-Notes/");
+    expect(centreNotesLink).toHaveAttribute("href", "https://centre-notes.netlify.app/");
     expect(centreNotesLink).toHaveAttribute("target", "_blank");
     expect(centreNotesLink).toHaveAttribute("rel", "noopener noreferrer");
   });
