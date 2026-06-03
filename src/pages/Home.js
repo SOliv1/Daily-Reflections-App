@@ -5,6 +5,13 @@ import { heroImages, heroImagesByBlock } from "../components/heroImagesConfig";
 import { getDailyReflection, getPreferredReflectionBlockMeta } from "../data/reflections";
 import { readQuietRoomPreferences } from "../data/quietRoomPreferences";
 
+const rotationModeOptions = [
+  { id: "daily", label: "Daily" },
+  { id: "weekly", label: "Weekly" },
+  { id: "monthly", label: "Monthly" },
+  { id: "custom", label: "Manual" }
+];
+
 function getRotationIndex(mode, imageCount, customIndex = null) {
   if (!imageCount) {
     return 0;
@@ -28,6 +35,20 @@ function getRotationIndex(mode, imageCount, customIndex = null) {
     default:
       return 0;
   }
+}
+
+function getImageDisplayName(filename) {
+  if (typeof filename !== "string") {
+    return "";
+  }
+
+  const baseName = filename.replace(/\.[^/.]+$/, "").replace(/[_-]+/g, " ").trim();
+
+  return baseName
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }
 
 function Home() {
@@ -59,6 +80,7 @@ function Home() {
   const activeHeroPool = heroImagesByBlock[reflectionBlock.key] || heroImages;
   const index = getRotationIndex(rotationMode, activeHeroPool.length, customIndex);
   const heroFilename = activeHeroPool[index] || heroImages[0];
+  const heroDisplayName = getImageDisplayName(heroFilename);
   const heroImage = `${process.env.PUBLIC_URL}/images/${heroFilename}`;
 
   let textClass = "text-day";
@@ -86,28 +108,39 @@ function Home() {
     <div className={`home-container ${bgClass} ${seasonClass.replace("season", "bg")}`}>
       {/* Hero image rotation controls for preview/testing (development only) */}
       {process.env.NODE_ENV === "development" && (
-        <div style={{ margin: "16px 0", textAlign: "center" }}>
-          <label>
-            Rotation Mode:
-            <select value={rotationMode} onChange={e => setRotationMode(e.target.value)}>
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="custom">Manual</option>
-            </select>
-          </label>
+        <section className="home-rotation-controls" aria-label="Hero rotation controls">
+          <p className="home-rotation-title">Hero Rotation</p>
+          <div className="home-rotation-pills" role="group" aria-label="Rotation mode">
+            {rotationModeOptions.map((option) => (
+              <button
+                key={option.id}
+                type="button"
+                className={rotationMode === option.id ? "home-rotation-pill selected" : "home-rotation-pill"}
+                onClick={() => setRotationMode(option.id)}
+                aria-pressed={rotationMode === option.id}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
           {rotationMode === "custom" && (
-            <label style={{ marginLeft: 16 }}>
-              Image:
-              <select value={customIndex} onChange={e => setCustomIndex(Number(e.target.value))}>
-                {activeHeroPool.map((img, i) => (
-                  <option key={img} value={i}>{img}</option>
-                ))}
-              </select>
-            </label>
+            <div className="home-custom-image-grid" role="group" aria-label="Manual image picker">
+              {activeHeroPool.map((img, i) => (
+                <button
+                  key={img}
+                  type="button"
+                  className={customIndex === i ? "home-custom-image-pill selected" : "home-custom-image-pill"}
+                  onClick={() => setCustomIndex(i)}
+                  aria-pressed={customIndex === i}
+                  aria-label={`Use image ${i + 1}: ${getImageDisplayName(img)}`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
           )}
-          <p className="testing-muted">Currently showing: {heroFilename}</p>
-        </div>
+          <p className="testing-muted">Currently showing: <span>{heroDisplayName}</span></p>
+        </section>
       )}
 
       <img

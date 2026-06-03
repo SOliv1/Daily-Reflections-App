@@ -137,9 +137,44 @@ const reflections = [
   {
   id: 20,
     title: "Timeless Ideas",
-    line: "Some ideas don’t belong to any moment at all. They stay, steady and luminous.",
+    line: ".",
     mood: "thoughtful",
     image: process.env.PUBLIC_URL + "/images/glowingOrb-in-darkness.png"
+  },
+  {
+    id: 21,
+    title: "Stable Ground",
+    line: "Calm structure steadies the moment and lets balance return.",
+    mood: "stable",
+    image: process.env.PUBLIC_URL + "/images/stable-ground.png"
+  },
+  {
+    id: 22,
+    title: "Steady Focus",
+    line: "Stay with the next simple thing, centred and unhurried.",
+    mood: "steady",
+    image: process.env.PUBLIC_URL + "/images/steady-focus.png"
+  },
+  {
+    id: 23,
+    title: "Quiet Usefulness",
+    line: "Let practical clarity make the next step simple.",
+    mood: "useful",
+    image: process.env.PUBLIC_URL + "/images/quiet-usefulness.png"
+  },
+  {
+    id: 24,
+    title: "Serene Ease",
+    line: "Soft calm is allowed to gather around you now.",
+    mood: "serene",
+    image: process.env.PUBLIC_URL + "/images/serene-ease.png"
+  },
+  {
+    id: 25,
+    title: "Tranquil Calm",
+    line: "Deep quiet restores what the day has asked of you.",
+    mood: "tranquil",
+    image: process.env.PUBLIC_URL + "/images/tranquil-calm.png"
   }
 
 
@@ -150,26 +185,26 @@ export const reflectionBlocks = {
   morning: {
     label: "Morning",
     orb: "Dawn Orb",
-    category: "Timely Ideas / Ready & Prepared",
-    reflectionIds: [19, 16, 9, 2, 14]
+    category: "Timely Ideas / Ready & Prepared / Stable Ground / Quiet Usefulness",
+    reflectionIds: [19, 16, 9, 2, 14, 21, 23]
   },
   afternoon: {
     label: "Afternoon",
     orb: "Neutral Orb",
-    category: "Thoughtful / Cherish / Releasing / Ideas",
-    reflectionIds: [17, 18, 15, 14, 4, 12]
+    category: "Thoughtful / Cherish / Releasing / Ideas / Stable Ground / Steady Focus / Quiet Usefulness",
+    reflectionIds: [17, 18, 15, 14, 4, 12, 21, 22, 23]
   },
   evening: {
     label: "Evening",
     orb: "Warm Orb",
-    category: "Cherish / Soft Reflections",
-    reflectionIds: [17, 18, 15, 6, 11]
+    category: "Cherish / Soft Reflections / Steady Focus / Serene Ease",
+    reflectionIds: [17, 18, 15, 6, 11, 22, 24]
   },
   night: {
     label: "Night",
     orb: "Night Orb",
-    category: "Timeless Ideas / Deep Calm",
-    reflectionIds: [20, 3, 8, 1, 13]
+    category: "Timeless Ideas / Deep Calm / Serene Ease / Tranquil Calm",
+    reflectionIds: [20, 3, 8, 1, 13, 24, 25]
   }
 };
 
@@ -193,6 +228,26 @@ export const reflectionFocuses = {
   timeless: {
     label: "Timeless calm",
     reflectionIds: [20, 3, 1, 8]
+  },
+  stable: {
+    label: "Stable ground",
+    reflectionIds: [21, 16, 9, 12]
+  },
+  steady: {
+    label: "Steady focus",
+    reflectionIds: [22, 14, 15, 3]
+  },
+  useful: {
+    label: "Quiet usefulness",
+    reflectionIds: [23, 16, 19, 14]
+  },
+  serene: {
+    label: "Serene ease",
+    reflectionIds: [24, 17, 18, 15, 6]
+  },
+  tranquil: {
+    label: "Tranquil calm",
+    reflectionIds: [25, 20, 3, 1, 8]
   }
 };
 

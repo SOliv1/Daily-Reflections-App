@@ -51,6 +51,98 @@
     opacity: 0.72;
 }
 
+.home-rotation-controls {
+    margin: 0 auto 20px;
+    width: min(620px, 100%);
+    padding: 14px 14px 12px;
+    border-radius: 18px;
+    border: 1px solid rgba(187, 146, 114, 0.24);
+    background:
+        linear-gradient(140deg, rgba(255, 255, 255, 0.7), rgba(255, 246, 236, 0.5));
+    box-shadow:
+        0 14px 34px rgba(104, 77, 57, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.78);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.home-rotation-title {
+    margin: 0 0 10px;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(71, 53, 40, 0.62);
+}
+
+.home-rotation-pills,
+.home-custom-image-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.home-custom-image-grid {
+    margin-top: 10px;
+}
+
+.home-rotation-pill,
+.home-custom-image-pill {
+    border: 1px solid rgba(125, 94, 72, 0.2);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.58);
+    color: rgba(51, 39, 31, 0.78);
+    cursor: pointer;
+    transition:
+        background 0.24s ease,
+        border-color 0.24s ease,
+        box-shadow 0.24s ease,
+        transform 0.24s ease;
+}
+
+.home-rotation-pill {
+    min-height: 36px;
+    padding: 8px 16px;
+    font-size: 0.76rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.home-custom-image-pill {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 500;
+}
+
+.home-rotation-pill:hover,
+.home-custom-image-pill:hover,
+.home-rotation-pill.selected,
+.home-custom-image-pill.selected {
+    transform: translateY(-1px);
+    border-color: rgba(164, 122, 95, 0.4);
+    background: rgba(255, 247, 237, 0.86);
+    box-shadow:
+        0 10px 24px rgba(117, 86, 65, 0.14),
+        0 0 24px rgba(242, 208, 179, 0.25);
+}
+
+.testing-muted {
+    margin: 10px 0 0;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(71, 53, 40, 0.56);
+}
+
+.testing-muted span {
+    color: rgba(51, 39, 31, 0.82);
+}
+
 .seasonal-quotes {
     margin: 0 auto 14px;
     max-width: 34ch;
@@ -312,6 +404,25 @@
 
 .hero-shimmer {
     animation: shimmerPulse 6s ease-in-out infinite;
+}
+
+@media (max-width: 680px) {
+    .home-rotation-controls {
+        padding: 12px;
+    }
+
+    .home-rotation-pill {
+        min-height: 34px;
+        padding: 7px 12px;
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+    }
+
+    .home-custom-image-pill {
+        width: 32px;
+        height: 32px;
+        font-size: 0.74rem;
+    }
 }
 
 @keyframes shimmerPulse {

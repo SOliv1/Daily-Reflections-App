@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import {
@@ -16,8 +16,11 @@ function renderQuietRoom() {
 }
 
 describe("Quiet Room", () => {
+  let openSpy;
+
   beforeEach(() => {
     localStorage.clear();
+    openSpy = jest.spyOn(window, "open").mockImplementation(() => null);
     Object.defineProperty(navigator, "clipboard", {
       configurable: true,
       value: {
@@ -28,6 +31,10 @@ describe("Quiet Room", () => {
       configurable: true,
       value: undefined
     });
+  });
+
+  afterEach(() => {
+    openSpy.mockRestore();
   });
 
   test("presents atmospheric choices instead of developer language", () => {
@@ -62,6 +69,16 @@ describe("Quiet Room", () => {
       orbSource: "manual",
       surpriseOffset: 0
     });
+  });
+
+  test("shows the selected focus in the room status", () => {
+    renderQuietRoom();
+
+    userEvent.click(screen.getByRole("button", { name: /timeless calm/i }));
+
+    const statusSection = screen.getByRole("region", { name: /what changed/i });
+    expect(within(statusSection).getByText("Focus")).toBeInTheDocument();
+    expect(within(statusSection).getByText("Timeless calm")).toBeInTheDocument();
   });
 
   test("responds when the rhythm changes", () => {
@@ -102,6 +119,103 @@ describe("Quiet Room", () => {
     expect(screen.getByRole("link", { name: /carry this into today/i })).toHaveAttribute(
       "href",
       "/today"
+    );
+  });
+
+  test("offers a quiet path into Centre Notes", () => {
+    renderQuietRoom();
+
+    const centreNotesLink = screen.getByRole("link", { name: /write a small thought in centre notes/i });
+
+    expect(centreNotesLink).toHaveTextContent(/write a small thought/i);
+    expect(centreNotesLink).toHaveAttribute("href", "https://soliv1.github.io/Centre-Notes/");
+    expect(centreNotesLink).toHaveAttribute("target", "_blank");
+    expect(centreNotesLink).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
+  test("offers direct social share options", () => {
+    renderQuietRoom();
+
+    expect(screen.getByRole("button", { name: /share everywhere/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /instagram/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /copy caption \+ hashtags/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /open image/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /download image/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /preview sample post/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /facebook/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /pinterest/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /tumblr/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /linkedin/i })).toBeInTheDocument();
+  });
+
+  test("shows sample post preview when requested", () => {
+    renderQuietRoom();
+
+    expect(screen.queryByText(/^sample post$/i)).not.toBeInTheDocument();
+    userEvent.click(screen.getByRole("button", { name: /preview sample post/i }));
+
+    expect(screen.getByText(/^sample post$/i)).toBeInTheDocument();
+    expect(screen.getByText(/shared from daily orb: reflections\./i)).toBeInTheDocument();
+    expect(screen.getByText(/#dailyorb/i)).toBeInTheDocument();
+  });
+
+  test("copies caption and hashtags for social posting", async () => {
+    renderQuietRoom();
+
+    userEvent.click(screen.getByRole("button", { name: /copy caption \+ hashtags/i }));
+
+    await waitFor(() => {
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(expect.stringContaining("#DailyOrb"));
+    });
+    await waitFor(() => {
+      expect(screen.getByText(/caption and hashtags copied/i)).toBeInTheDocument();
+    });
+  });
+
+  test("opens reflection image in a new tab for media posting", () => {
+    renderQuietRoom();
+
+    userEvent.click(screen.getByRole("button", { name: /open image/i }));
+
+    expect(openSpy).toHaveBeenCalledWith(
+      expect.stringContaining("/images/"),
+      "_blank",
+      "noopener,noreferrer"
+    );
+  });
+
+  test("share everywhere opens social pages and copies caption once", async () => {
+    renderQuietRoom();
+
+    userEvent.click(screen.getByRole("button", { name: /share everywhere/i }));
+
+    await waitFor(() => {
+      expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1);
+    });
+    expect(openSpy).toHaveBeenCalledWith(
+      expect.stringContaining("facebook.com/sharer"),
+      "_blank",
+      "noopener,noreferrer"
+    );
+    expect(openSpy).toHaveBeenCalledWith(
+      expect.stringContaining("pinterest.com/pin/create/button"),
+      "_blank",
+      "noopener,noreferrer"
+    );
+    expect(openSpy).toHaveBeenCalledWith(
+      expect.stringContaining("tumblr.com/widgets/share/tool"),
+      "_blank",
+      "noopener,noreferrer"
+    );
+    expect(openSpy).toHaveBeenCalledWith(
+      expect.stringContaining("linkedin.com/sharing/share-offsite"),
+      "_blank",
+      "noopener,noreferrer"
+    );
+    expect(openSpy).toHaveBeenCalledWith(
+      "https://www.instagram.com/",
+      "_blank",
+      "noopener,noreferrer"
     );
   });
 
