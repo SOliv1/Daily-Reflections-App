@@ -72,6 +72,7 @@ const orbChoices = [
 
 const DAILY_ORB_URL = "https://soliv1.github.io/Daily-Reflections-App/";
 const CENTRE_NOTES_URL = "https://centre-notes.netlify.app/";
+const SEASONAL_MIND_SPACE_URL = "https://soliv1.github.io/Seasonal-mind-space/";
 const SEASONAL_STUDIO_URL = "https://seasonal.studio/";
 
 function getRhythmChoice(rhythm) {
@@ -493,6 +494,24 @@ function QuietRoom() {
             A soft interior for shaping the feeling of today before you carry it
             back into the app.
           </p>
+          <div className="quiet-room-companion-links" aria-label="Companion spaces">
+            <a
+              className="quiet-room-companion-link"
+              href={CENTRE_NOTES_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open Centre Notes
+            </a>
+            <a
+              className="quiet-room-companion-link quiet-room-companion-link-secondary"
+              href={SEASONAL_MIND_SPACE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Explore Seasonal Mind Space
+            </a>
+          </div>
         </div>
 
         <div className="quiet-room-orb-stage">

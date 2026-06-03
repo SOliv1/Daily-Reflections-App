@@ -123,6 +123,50 @@
   color: rgba(47, 41, 38, 0.72);
 }
 
+.quiet-room-companion-links {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.quiet-room-companion-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0.72rem 1rem;
+  border: 1px solid rgba(92, 112, 94, 0.24);
+  border-radius: 999px;
+  background: rgba(248, 250, 246, 0.64);
+  color: rgba(47, 57, 44, 0.78);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.quiet-room-companion-link:hover {
+  background: rgba(247, 252, 241, 0.82);
+  border-color: rgba(90, 117, 88, 0.34);
+  transform: translateY(-1px);
+}
+
+.quiet-room-companion-link-secondary {
+  background: rgba(255, 255, 255, 0.34);
+  border-color: rgba(149, 112, 87, 0.2);
+  color: rgba(47, 41, 38, 0.58);
+  font-weight: 500;
+}
+
+.quiet-room-companion-link-secondary:hover {
+  background: rgba(255, 251, 246, 0.56);
+  border-color: rgba(149, 112, 87, 0.3);
+}
+
 .quiet-room-orb-stage {
   position: relative;
   z-index: 1;
