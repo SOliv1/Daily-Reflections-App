@@ -75,6 +75,11 @@ const CENTRE_NOTES_URL = "https://centre-notes.netlify.app/";
 const SEASONAL_MIND_SPACE_URL = "https://soliv1.github.io/Seasonal-mind-space/";
 const SEASONAL_STUDIO_URL = "https://seasonal.studio/";
 
+function withDailyReturn(url) {
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}from=daily-reflections&returnTo=${encodeURIComponent(DAILY_ORB_URL)}`;
+}
+
 function getRhythmChoice(rhythm) {
   return rhythmChoices.find((choice) => choice.id === rhythm) || rhythmChoices[0];
 }
@@ -497,17 +502,13 @@ function QuietRoom() {
           <div className="quiet-room-companion-links" aria-label="Companion spaces">
             <a
               className="quiet-room-companion-link"
-              href={CENTRE_NOTES_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={withDailyReturn(CENTRE_NOTES_URL)}
             >
               Open Centre Notes
             </a>
             <a
               className="quiet-room-companion-link quiet-room-companion-link-secondary"
-              href={SEASONAL_MIND_SPACE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={withDailyReturn(SEASONAL_MIND_SPACE_URL)}
             >
               Explore Seasonal Mind Space
             </a>
@@ -521,9 +522,7 @@ function QuietRoom() {
 
         <a
           className="quiet-room-brand-orb"
-          href={SEASONAL_STUDIO_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={`${SEASONAL_STUDIO_URL}studio/about`}
           aria-label="Seasonal.Studio"
         >
           <img
@@ -595,9 +594,7 @@ function QuietRoom() {
             </Link>
             <a
               className="quiet-room-link quiet-room-link-centre-notes"
-              href={CENTRE_NOTES_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={withDailyReturn(CENTRE_NOTES_URL)}
               aria-label="Write a small thought in Centre Notes"
             >
               Write a small thought

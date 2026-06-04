@@ -1,7 +1,39 @@
 .footer {
     text-align: center;
     padding: 30px 0;
-    opacity: 0.6;
     font-size: 0.9rem;
     margin-top: 60px;
+    opacity: 0.82;
+}
+
+.footer p {
+    margin: 0 0 0.85rem;
+}
+
+.footer-return-nav {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    justify-content: center;
+}
+
+.footer-return-nav a {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(78, 72, 67, 0.16);
+    border-radius: 999px;
+    color: inherit;
+    display: inline-flex;
+    font-size: 0.72rem;
+    justify-content: center;
+    letter-spacing: 0.1em;
+    min-height: 2.35rem;
+    padding: 0.55rem 0.85rem;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.footer-return-nav a:hover {
+    background: rgba(255, 255, 255, 0.72);
 }
